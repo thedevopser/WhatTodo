@@ -11,7 +11,7 @@ function Minimap.Setup(db)
 
   local dataObj = LDB:NewDataObject("WhatTodo", {
     type = "launcher",
-    icon = "Interface\\Icons\\INV_Scroll_03",
+    icon = "Interface\\AddOns\\WhatTodo\\Textures\\icon",
     OnClick = function(_, button)
       if button == "RightButton" then
         WhatTodo.AdminPanel.Open()

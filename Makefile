@@ -4,7 +4,7 @@ VERSION  := $(shell git describe --tags --abbrev=0 2>/dev/null)
 
 # Racines embarquées dans le zip (fichier explicite ou dossier parcouru récursivement).
 # Tout le reste (docs, Makefile, CHANGELOG, README, LICENSE, .git…) est exclu.
-INCLUDE := WhatTodo.toc WhatTodo.lua Locales Core UI Libs
+INCLUDE := WhatTodo.toc WhatTodo.lua Locales Core UI Textures Libs
 
 .PHONY: zip help
 
