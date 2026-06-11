@@ -5,6 +5,11 @@ local Tasks = WhatTodo.Tasks
 local Reset = WhatTodo.Reset
 local L = WhatTodo_L
 
+-- écart entre hauteur du cadre et hauteur du viewport (marge haute 36 + marge basse 12)
+local CHROME = 48
+-- hauteur minimale du cadre quand peu ou pas de tâches
+local MIN_HEIGHT = 120
+
 local FREQ_ORDER = { "daily", "weekly", "monthly" }
 local FREQ_TITLES = {
   daily = L.SECTION_DAILY,
@@ -95,9 +100,22 @@ function Display.Build(database)
   close:SetPoint("TOPRIGHT", -2, -2)
   close:SetScript("OnClick", function() Display.Hide() end)
 
-  local content = CreateFrame("Frame", nil, frame)
-  content:SetPoint("TOPLEFT", 12, -36)
-  content:SetPoint("BOTTOMRIGHT", -12, 12)
+  local scroll = CreateFrame("ScrollFrame", nil, frame)
+  scroll:SetPoint("TOPLEFT", 12, -36)
+  scroll:SetPoint("BOTTOMRIGHT", -12, 12)
+  scroll:EnableMouseWheel(true)
+  scroll:SetScript("OnMouseWheel", function(self, delta)
+    local maxScroll = self:GetVerticalScrollRange()
+    local new = math.max(0, math.min(maxScroll, self:GetVerticalScroll() - delta * 24))
+    self:SetVerticalScroll(new)
+  end)
+
+  local content = CreateFrame("Frame", nil, scroll)
+  content:SetWidth(scroll:GetWidth())
+  content:SetHeight(1)
+  scroll:SetScrollChild(content)
+
+  frame.scroll = scroll
   frame.content = content
   frame.rows = {}
 
@@ -147,6 +165,20 @@ function Display.Refresh()
       end
       y = y - 6
     end
+  end
+
+  local contentHeight = -y
+  frame.content:SetWidth(frame.scroll:GetWidth())
+  frame.content:SetHeight(math.max(contentHeight, 1))
+
+  local maxHeight = math.floor(UIParent:GetHeight() * 0.8)
+  local wanted = contentHeight + CHROME
+  local h = math.max(MIN_HEIGHT, math.min(wanted, maxHeight))
+  frame:SetHeight(h)
+
+  -- tout tient dans le cadre : on remet le scroll en haut
+  if wanted <= h then
+    frame.scroll:SetVerticalScroll(0)
   end
 end
 

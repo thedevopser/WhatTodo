@@ -4,6 +4,14 @@ All notable changes to WhatTodo are documented here.
 
 ---
 
+## [1.0.2]
+
+### Changed
+- Display window now resizes dynamically to fit the number of tasks instead of using a fixed height, and is capped at 80% of the screen height (`UI/Display.lua`)
+- Beyond the cap, the task list becomes scrollable with the mouse wheel — tasks no longer overflow outside the frame when many are added
+
+---
+
 ## [1.0.1]
 
 ### Added
