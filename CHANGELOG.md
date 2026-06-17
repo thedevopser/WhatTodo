@@ -4,6 +4,13 @@ All notable changes to WhatTodo are documented here.
 
 ---
 
+## [1.0.3]
+
+### Changed
+- bump wow versikon
+
+---
+
 ## [1.0.2]
 
 ### Changed
