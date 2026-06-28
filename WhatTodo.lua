@@ -11,6 +11,9 @@ local dbDefaults = {
     display = { shown = true, point = "CENTER", x = 0, y = 0 },
     minimap = { hide = false },
   },
+  global = {
+    lastSeenVersion = nil,
+  },
 }
 
 function addon:OnInitialize()
@@ -25,6 +28,7 @@ end
 
 function addon:OnEnable()
   WhatTodo.Display.Build(self.db)
+  WhatTodo.ChangelogPopup.Initialize(self.db)
   self:RegisterEvent("PLAYER_ENTERING_WORLD", function() WhatTodo.Display.Refresh() end)
   self.ticker = C_Timer.NewTicker(60, function() WhatTodo.Display.Refresh() end)
   if self.db.char.display.shown then
