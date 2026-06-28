@@ -4,6 +4,19 @@ All notable changes to WhatTodo are documented here.
 
 ---
 
+## [1.1.0]
+
+### Added
+- Changelog popup shown once per account on the first login after an update, localized FR/EN from the client locale (`Core/Changelog.lua`, `UI/ChangelogPopup.lua`, `L.CHANGELOG_*` keys in `Locales/enUS.lua` and `Locales/frFR.lua`)
+- Account-wide `db.global.lastSeenVersion` (first use of an AceDB global root) to track the last announced version; compared against the `CHANGELOG_VERSION` constant
+- Unit-test infrastructure: Busted suite run under Docker (`Dockerfile.test`, `tests/mock_wow_api.lua`, `tests/Changelog_test.lua`)
+- Packaging guard `tools/check-packaging.py` ensuring every script referenced in the `.toc` is shipped in the zip
+
+### Changed
+- `Makefile` switched from blind directory globbing to an explicit `ADDON_FILES` list (with a recursive `Libs/` walk), gated by the packaging guard before each build
+
+---
+
 ## [1.0.3]
 
 ### Changed

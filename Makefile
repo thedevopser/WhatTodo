@@ -2,23 +2,39 @@ NAME     := WhatTodo
 DEST_DIR := $(HOME)/addons/versions
 VERSION  := $(shell git describe --tags --abbrev=0 2>/dev/null)
 
-# Racines embarquées dans le zip (fichier explicite ou dossier parcouru récursivement).
-# Tout le reste (docs, Makefile, CHANGELOG, README, LICENSE, .git…) est exclu.
-INCLUDE := WhatTodo.toc WhatTodo.lua Locales Core UI Textures Libs
+# Fichiers du code addon, listés explicitement (garde-fou check-packaging).
+# Libs/ est ajouté récursivement au zip (Ace3 ≈ 40 fichiers chargés via
+# Libs/embeds.xml, non listés un à un dans le .toc).
+ADDON_FILES := \
+	WhatTodo.toc \
+	WhatTodo.lua \
+	Locales/enUS.lua \
+	Locales/frFR.lua \
+	Core/Reset.lua \
+	Core/Tasks.lua \
+	Core/Changelog.lua \
+	UI/AdminPanel.lua \
+	UI/Display.lua \
+	UI/Minimap.lua \
+	UI/ChangelogPopup.lua \
+	Libs/embeds.xml \
+	Textures/icon.tga
 
 .PHONY: zip help
 
 zip:
 	@[ -n "$(VERSION)" ] || { echo "Erreur : aucun tag git trouvé. Exemple : git tag v1.0.0"; exit 1; }
+	@python3 tools/check-packaging.py $(ADDON_FILES)
 	@mkdir -p "$(DEST_DIR)"
 	@python3 -c "\
 import os, zipfile; \
 name = '$(NAME)'; \
 dest = '$(DEST_DIR)/$(NAME)-$(VERSION).zip'; \
-roots = '$(INCLUDE)'.split(); \
-walk = lambda r: [r] if os.path.isfile(r) else [os.path.join(dp, f) for dp, _, fs in os.walk(r) for f in fs]; \
+files = '$(ADDON_FILES)'.split(); \
+libs = [os.path.join(dp, f) for dp, _, fs in os.walk('Libs') for f in fs]; \
+seen = set(); \
 zf = zipfile.ZipFile(dest, 'w', zipfile.ZIP_DEFLATED); \
-[zf.write(p, name + '/' + p) for r in roots for p in walk(r)]; \
+[ (zf.write(p, name + '/' + p), seen.add(p)) for p in files + libs if p not in seen ]; \
 zf.close(); \
 print('->', dest)"
 
