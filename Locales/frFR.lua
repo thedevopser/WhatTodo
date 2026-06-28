@@ -29,3 +29,8 @@ L.RESET_IN_HOURS    = "reset dans %dh %02dmin"
 L.TOOLTIP_COUNT     = "%s : %d"
 L.TOOLTIP_LEFT      = "Clic gauche : afficher/masquer"
 L.TOOLTIP_RIGHT     = "Clic droit : configurer"
+
+-- Popup de nouveautés
+L.CHANGELOG_TITLE   = "WhatTodo — Nouveautés"
+L.CHANGELOG_BODY    = "WhatTodo affiche désormais une fenêtre de nouveautés après chaque mise à jour, pour ne rien manquer des changements."
+L.CHANGELOG_CLOSE   = "Compris"

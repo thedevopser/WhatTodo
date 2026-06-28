@@ -3,7 +3,7 @@
 ## Notes: Daily/weekly/monthly to-do list that resets at 5am server time
 ## Notes-frFR: Liste de tâches quotidiennes/hebdomadaires/mensuelles avec reset à 5h (heure serveur)
 ## Author: TheDevOpser
-## Version: 1.0.3
+## Version: 1.1.0
 ## SavedVariables: WhatTodoDB
 ## IconTexture: Interface\AddOns\WhatTodo\Textures\icon
 
@@ -14,7 +14,9 @@ Locales\frFR.lua
 
 Core\Reset.lua
 Core\Tasks.lua
+Core\Changelog.lua
 UI\AdminPanel.lua
 UI\Display.lua
 UI\Minimap.lua
+UI\ChangelogPopup.lua
 WhatTodo.lua
