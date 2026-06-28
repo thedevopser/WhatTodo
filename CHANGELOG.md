@@ -4,6 +4,18 @@ All notable changes to WhatTodo are documented here.
 
 ---
 
+## [1.2.0]
+
+### Fixed
+- Weekly reset day is now region-aware instead of being hardcoded to Wednesday: auto-detected via `GetCurrentRegion()` — Tuesday on US, Wednesday on EU, Thursday on KR/TW/CN (fallback Wednesday) (`Core/Reset.lua`). Daily (5:00) and monthly (1st) are unchanged
+
+### Added
+- `Reset.GetWeeklyResetWeekday(region)` (pure region→weekday mapping) and `Reset.GetCurrentRegion()`; `GetResetBoundary`/`GetNextReset`/`IsDone` take an optional `weeklyResetWday` argument so the reset day stays injectable and testable (`Core/Reset.lua`, wired in `Core/Tasks.lua` and `UI/Display.lua`)
+- `tests/Reset_test.lua` Busted coverage for the region mapping and weekly boundaries; `_G.date` stub added to `tests/mock_wow_api.lua`
+- `docs/ROADMAP.md` documenting the publication roadmap and per-feature status
+
+---
+
 ## [1.1.0]
 
 ### Added

@@ -5,7 +5,7 @@ local Changelog = WhatTodo.Changelog
 local L = WhatTodo_L
 
 -- bumper à la main à chaque annonce ; doit rester égal à ## Version du .toc
-local CHANGELOG_VERSION = "1.1.0"
+local CHANGELOG_VERSION = "1.2.0"
 
 local function showPopup()
   StaticPopupDialogs = StaticPopupDialogs or {}
