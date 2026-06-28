@@ -32,5 +32,5 @@ L.TOOLTIP_RIGHT     = "Clic droit : configurer"
 
 -- Popup de nouveautés
 L.CHANGELOG_TITLE   = "WhatTodo — Nouveautés"
-L.CHANGELOG_BODY    = "WhatTodo affiche désormais une fenêtre de nouveautés après chaque mise à jour, pour ne rien manquer des changements."
+L.CHANGELOG_BODY    = "Les tâches hebdomadaires se réinitialisent désormais le bon jour selon votre région : mardi sur les royaumes US, mercredi sur EU, jeudi sur KR/TW/CN."
 L.CHANGELOG_CLOSE   = "Compris"

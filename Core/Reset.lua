@@ -4,6 +4,24 @@ WhatTodo.Reset = Reset
 
 local DAY = 86400
 
+-- GetCurrentRegion(): 1=US, 2=KR, 3=EU, 4=TW, 5=CN
+-- t.wday : 1=dimanche … 7=samedi  (mardi=3, mercredi=4, jeudi=5)
+local WEEKLY_RESET_WDAY = {
+  [1] = 3, -- US : mardi
+  [3] = 4, -- EU : mercredi
+  [2] = 5, -- KR : jeudi
+  [4] = 5, -- TW : jeudi
+  [5] = 5, -- CN : jeudi
+}
+
+function Reset.GetWeeklyResetWeekday(region)
+  return WEEKLY_RESET_WDAY[region] or 4 -- fallback mercredi (EU) si région inconnue
+end
+
+function Reset.GetCurrentRegion()
+  return GetCurrentRegion and GetCurrentRegion() or nil
+end
+
 -- offset (en secondes) entre l'heure murale du royaume et l'UTC
 function Reset.GetServerOffset()
   local now = GetServerTime()
@@ -35,7 +53,7 @@ local function daysInMonth(year, month)
 end
 
 -- dernière borne 5h royaume déjà passée pour la fréquence
-function Reset.GetResetBoundary(frequency, now, offset)
+function Reset.GetResetBoundary(frequency, now, offset, weeklyResetWday)
   local t = realmTime(now, offset)
   local secsSinceMidnight = t.hour * 3600 + t.min * 60 + t.sec
   local today5h = now - secsSinceMidnight + 5 * 3600
@@ -47,9 +65,9 @@ function Reset.GetResetBoundary(frequency, now, offset)
     return today5h - DAY
 
   elseif frequency == "weekly" then
-    -- t.wday : 1=dimanche … 4=mercredi … 7=samedi
-    local daysSinceWed = (t.wday - 4) % 7
-    local boundary = today5h - daysSinceWed * DAY
+    weeklyResetWday = weeklyResetWday or 4
+    local daysSince = (t.wday - weeklyResetWday) % 7
+    local boundary = today5h - daysSince * DAY
     if now < boundary then
       boundary = boundary - 7 * DAY
     end
@@ -68,8 +86,8 @@ function Reset.GetResetBoundary(frequency, now, offset)
 end
 
 -- prochaine borne 5h royaume à venir
-function Reset.GetNextReset(frequency, now, offset)
-  local boundary = Reset.GetResetBoundary(frequency, now, offset)
+function Reset.GetNextReset(frequency, now, offset, weeklyResetWday)
+  local boundary = Reset.GetResetBoundary(frequency, now, offset, weeklyResetWday)
   if frequency == "daily" then
     return boundary + DAY
   elseif frequency == "weekly" then
@@ -81,9 +99,9 @@ function Reset.GetNextReset(frequency, now, offset)
 end
 
 -- une tâche est-elle faite pour la période courante ?
-function Reset.IsDone(lastCompleted, frequency, now, offset)
+function Reset.IsDone(lastCompleted, frequency, now, offset, weeklyResetWday)
   if not lastCompleted then
     return false
   end
-  return lastCompleted >= Reset.GetResetBoundary(frequency, now, offset)
+  return lastCompleted >= Reset.GetResetBoundary(frequency, now, offset, weeklyResetWday)
 end

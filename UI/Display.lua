@@ -126,6 +126,7 @@ function Display.Refresh()
   if not frame then return end
   local now = GetServerTime()
   local offset = Reset.GetServerOffset()
+  local wday = Reset.GetWeeklyResetWeekday(Reset.GetCurrentRegion())
 
   for _, row in ipairs(frame.rows) do row:Hide() end
   if frame.headers then
@@ -141,7 +142,7 @@ function Display.Refresh()
     if #list > 0 then
       headerIndex = headerIndex + 1
       local header = acquireHeader(headerIndex)
-      local nextReset = Reset.GetNextReset(freq, now, offset)
+      local nextReset = Reset.GetNextReset(freq, now, offset, wday)
       header:ClearAllPoints()
       header:SetPoint("TOPLEFT", frame.content, "TOPLEFT", 0, y)
       -- titre en brun très foncé (lisible sur parchemin clair), compteur en gris foncé

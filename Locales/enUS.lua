@@ -31,5 +31,5 @@ L.TOOLTIP_RIGHT     = "Right click: configure"
 
 -- Popup de nouveautés
 L.CHANGELOG_TITLE   = "WhatTodo — What's new"
-L.CHANGELOG_BODY    = "WhatTodo now shows a what's-new popup after each update, so you never miss what changed."
+L.CHANGELOG_BODY    = "Weekly tasks now reset on the correct day for your region: Tuesday on US realms, Wednesday on EU, Thursday on KR/TW/CN."
 L.CHANGELOG_CLOSE   = "Got it"

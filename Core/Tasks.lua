@@ -17,6 +17,10 @@ local function offset()
   return Reset.GetServerOffset()
 end
 
+local function weeklyResetWday()
+  return Reset.GetWeeklyResetWeekday(Reset.GetCurrentRegion())
+end
+
 function Tasks.GetAll()
   return db.char.tasks
 end
@@ -73,7 +77,7 @@ function Tasks.SetCompleted(id, done)
 end
 
 function Tasks.IsDone(task)
-  return Reset.IsDone(task.lastCompleted, task.frequency, now(), offset())
+  return Reset.IsDone(task.lastCompleted, task.frequency, now(), offset(), weeklyResetWday())
 end
 
 function Tasks.RemainingCount(frequency)
