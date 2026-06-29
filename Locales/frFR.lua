@@ -32,5 +32,5 @@ L.TOOLTIP_RIGHT     = "Clic droit : configurer"
 
 -- Popup de nouveautés
 L.CHANGELOG_TITLE   = "WhatTodo — Nouveautés"
-L.CHANGELOG_BODY    = "Les tâches hebdomadaires se réinitialisent désormais le bon jour selon votre région : mardi sur les royaumes US, mercredi sur EU, jeudi sur KR/TW/CN."
+L.CHANGELOG_BODY    = "Correction d'une erreur de blocage (« action protégée ClearTarget ») qui apparaissait au lancement après une mise à jour. Appuyer sur Échap ne déclenche plus d'erreur."
 L.CHANGELOG_CLOSE   = "Compris"

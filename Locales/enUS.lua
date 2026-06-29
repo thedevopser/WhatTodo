@@ -31,5 +31,5 @@ L.TOOLTIP_RIGHT     = "Right click: configure"
 
 -- Popup de nouveautés
 L.CHANGELOG_TITLE   = "WhatTodo — What's new"
-L.CHANGELOG_BODY    = "Weekly tasks now reset on the correct day for your region: Tuesday on US realms, Wednesday on EU, Thursday on KR/TW/CN."
+L.CHANGELOG_BODY    = "Fixed a blocked-action error ('protected function ClearTarget') that appeared on login after an update. Pressing Escape no longer triggers an error."
 L.CHANGELOG_CLOSE   = "Got it"
