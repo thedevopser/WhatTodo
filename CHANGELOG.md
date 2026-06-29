@@ -4,6 +4,13 @@ All notable changes to WhatTodo are documented here.
 
 ---
 
+## [1.2.1]
+
+### Fixed
+- No more `[ADDON_ACTION_FORBIDDEN] ClearTarget()` taint error on login after an update: the changelog popup no longer reassigns the global `StaticPopupDialogs`. The dialog is now registered at file load time (writing a single key) with `preferredIndex = 3` (`UI/ChangelogPopup.lua`)
+
+---
+
 ## [1.2.0]
 
 ### Fixed

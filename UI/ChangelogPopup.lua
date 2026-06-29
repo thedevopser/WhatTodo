@@ -5,18 +5,22 @@ local Changelog = WhatTodo.Changelog
 local L = WhatTodo_L
 
 -- bumper à la main à chaque annonce ; doit rester égal à ## Version du .toc
-local CHANGELOG_VERSION = "1.2.0"
+local CHANGELOG_VERSION = "1.2.1"
+
+-- Définition enregistrée au chargement du fichier : on n'écrit qu'une nouvelle
+-- clé, sans jamais réassigner la globale StaticPopupDialogs (réassigner taint
+-- l'UI sécurisée → ToggleGameMenu/ClearTarget bloqués à l'appui sur Échap).
+StaticPopupDialogs["WHATTODO_CHANGELOG"] = {
+  text = L.CHANGELOG_TITLE .. "\n\n" .. L.CHANGELOG_BODY,
+  button1 = L.CHANGELOG_CLOSE,
+  timeout = 0,
+  whileDead = true,
+  hideOnEscape = true,
+  showAlert = true,
+  preferredIndex = 3,
+}
 
 local function showPopup()
-  StaticPopupDialogs = StaticPopupDialogs or {}
-  StaticPopupDialogs["WHATTODO_CHANGELOG"] = {
-    text = L.CHANGELOG_TITLE .. "\n\n" .. L.CHANGELOG_BODY,
-    button1 = L.CHANGELOG_CLOSE,
-    timeout = 0,
-    whileDead = true,
-    hideOnEscape = true,
-    showAlert = true,
-  }
   StaticPopup_Show("WHATTODO_CHANGELOG")
 end
 
