@@ -6,19 +6,33 @@ WhatTodo.addon = addon
 
 local dbDefaults = {
   char = {
-    tasks = {},
-    nextId = 1,
+    dbVersion = 0,
     display = { shown = true, point = "CENTER", x = 0, y = 0 },
     minimap = { hide = false },
   },
+  profile = {
+    tasks = {},
+    nextId = 1,
+  },
   global = {
+    tasks = {},
+    nextId = 1,
+    dbVersion = 0,
     lastSeenVersion = nil,
   },
 }
 
 function addon:OnInitialize()
-  self.db = LibStub("AceDB-3.0"):New("WhatTodoDB", dbDefaults, true)
+  self.db = LibStub("AceDB-3.0"):New("WhatTodoDB", dbDefaults)
   WhatTodo.db = self.db
+  -- chaque personnage a son propre profil (liste perso isolée + copiable entre persos).
+  -- les versions <= 1.2 épinglaient un profil "Default" partagé : on rebascule ce
+  -- personnage sur son profil dédié avant toute migration de données.
+  local charProfile = self.db.keys.char
+  if self.db:GetCurrentProfile() ~= charProfile then
+    self.db:SetProfile(charProfile)
+  end
+  WhatTodo.Migrations.Run(self.db)
   WhatTodo.Tasks.Init(self.db)
   WhatTodo.AdminPanel.Setup()
   WhatTodo.Minimap.Setup(self.db)

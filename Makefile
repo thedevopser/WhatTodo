@@ -11,6 +11,7 @@ ADDON_FILES := \
 	Locales/enUS.lua \
 	Locales/frFR.lua \
 	Core/Reset.lua \
+	Core/Migrations.lua \
 	Core/Tasks.lua \
 	Core/Changelog.lua \
 	UI/AdminPanel.lua \

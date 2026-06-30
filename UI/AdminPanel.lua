@@ -13,9 +13,16 @@ local FREQ_LABELS = {
 }
 local FREQ_ORDER = { "daily", "weekly", "monthly" }
 
+local SCOPE_LABELS = {
+  char = L.SCOPE_CHAR,
+  account = L.SCOPE_ACCOUNT,
+}
+local SCOPE_ORDER = { "char", "account" }
+
 local frame -- fenêtre AceGUI
 local list  -- ScrollFrame contenant les tâches existantes
 local newFreq = "daily"
+local newScope = "char"
 
 -- on diffère la reconstruction : éviter de libérer un widget pendant son propre callback
 local function scheduleRefresh()
@@ -49,6 +56,16 @@ local function buildRow(task)
     scheduleRefresh()
   end)
   row:AddChild(freqDD)
+
+  -- badge de portée : les tâches account-wide sont partagées entre persos
+  local badge = AceGUI:Create("Label")
+  if task.scope == "account" then
+    badge:SetText("|cff66bbff[" .. L.SCOPE_ACCOUNT_TAG .. "]|r")
+  else
+    badge:SetText("")
+  end
+  badge:SetWidth(70)
+  row:AddChild(badge)
 
   local del = AceGUI:Create("Button")
   del:SetText(L.DELETE)
@@ -107,6 +124,14 @@ function AdminPanel.Open()
   freqDropdown:SetCallback("OnValueChanged", function(_, _, value) newFreq = value end)
   frame:AddChild(freqDropdown)
 
+  local scopeDropdown = AceGUI:Create("Dropdown")
+  scopeDropdown:SetLabel(L.SCOPE)
+  scopeDropdown:SetList(SCOPE_LABELS, SCOPE_ORDER)
+  scopeDropdown:SetValue(newScope)
+  scopeDropdown:SetWidth(150)
+  scopeDropdown:SetCallback("OnValueChanged", function(_, _, value) newScope = value end)
+  frame:AddChild(scopeDropdown)
+
   local labelBox = AceGUI:Create("EditBox")
   labelBox:SetLabel(L.LABEL)
   labelBox:SetWidth(200)
@@ -119,7 +144,7 @@ function AdminPanel.Open()
   local function doAdd()
     local text = strtrim(labelBox:GetText() or "")
     if text ~= "" then
-      Tasks.Add(text, newFreq)
+      Tasks.Add(text, newFreq, newScope)
       labelBox:SetText("")
       labelBox:ClearFocus()
       scheduleRefresh()
@@ -129,6 +154,42 @@ function AdminPanel.Open()
   -- confort : Entrée dans le champ ajoute aussi
   labelBox:SetCallback("OnEnterPressed", doAdd)
   frame:AddChild(addBtn)
+
+  -- section profils : copier la liste perso d'un autre personnage vers le courant
+  local profilesHeading = AceGUI:Create("Heading")
+  profilesHeading:SetText(L.PROFILES)
+  profilesHeading:SetFullWidth(true)
+  frame:AddChild(profilesHeading)
+
+  local selectedProfile
+  local profileDD = AceGUI:Create("Dropdown")
+  profileDD:SetLabel(L.PROFILE_COPY_FROM)
+  profileDD:SetWidth(200)
+  -- autres profils que le courant (chaque perso connu = un profil copiable)
+  local current = WhatTodo.db:GetCurrentProfile()
+  local choices, order = {}, {}
+  for _, name in ipairs(WhatTodo.db:GetProfiles()) do
+    if name ~= current then
+      choices[name] = name
+      order[#order + 1] = name
+    end
+  end
+  table.sort(order)
+  profileDD:SetList(choices, order)
+  profileDD:SetCallback("OnValueChanged", function(_, _, value) selectedProfile = value end)
+  frame:AddChild(profileDD)
+
+  local copyBtn = AceGUI:Create("Button")
+  copyBtn:SetText(L.PROFILE_COPY)
+  copyBtn:SetWidth(90)
+  copyBtn:SetCallback("OnClick", function()
+    if selectedProfile then
+      WhatTodo.db:CopyProfile(selectedProfile)
+      print(L.PROFILE_COPIED:format(selectedProfile))
+      scheduleRefresh()
+    end
+  end)
+  frame:AddChild(copyBtn)
 
   local heading = AceGUI:Create("Heading")
   heading:SetText(L.EXISTING_TASKS)
