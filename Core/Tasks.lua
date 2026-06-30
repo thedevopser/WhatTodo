@@ -21,13 +21,29 @@ local function weeklyResetWday()
   return Reset.GetWeeklyResetWeekday(Reset.GetCurrentRegion())
 end
 
+-- Deux portées : "char" -> db.profile.tasks (liste copiable entre persos via les
+-- profils AceDB), "account" -> db.global.tasks (partagée, complétion partagée).
+-- La table de stockage est déterminée par le préfixe d'id : "t" = char, "a" = account.
+local function storeFor(scope)
+  if scope == "account" then return db.global, "a" end
+  return db.profile, "t"
+end
+
+local function storeForId(id)
+  if id:sub(1, 1) == "a" then return db.global end
+  return db.profile
+end
+
 function Tasks.GetAll()
-  return db.char.tasks
+  local out = {}
+  for _, task in ipairs(db.profile.tasks) do out[#out + 1] = task end
+  for _, task in ipairs(db.global.tasks) do out[#out + 1] = task end
+  return out
 end
 
 function Tasks.GetByFrequency(frequency)
   local out = {}
-  for _, task in ipairs(db.char.tasks) do
+  for _, task in ipairs(Tasks.GetAll()) do
     if task.frequency == frequency then
       out[#out + 1] = task
     end
@@ -36,30 +52,34 @@ function Tasks.GetByFrequency(frequency)
   return out
 end
 
-function Tasks.Add(label, frequency)
+function Tasks.Add(label, frequency, scope)
   label = strtrim(label or "")
   if label == "" then return end
-  local id = "t" .. db.char.nextId
-  db.char.nextId = db.char.nextId + 1
-  db.char.tasks[#db.char.tasks + 1] = {
+  scope = scope == "account" and "account" or "char"
+  local store, prefix = storeFor(scope)
+  local id = prefix .. store.nextId
+  store.nextId = store.nextId + 1
+  store.tasks[#store.tasks + 1] = {
     id = id,
     label = label,
     frequency = frequency,
+    scope = scope,
     lastCompleted = nil,
-    order = #db.char.tasks + 1,
+    order = #store.tasks + 1,
   }
   return id
 end
 
 local function indexOf(id)
-  for i, task in ipairs(db.char.tasks) do
-    if task.id == id then return i, task end
+  local store = storeForId(id)
+  for i, task in ipairs(store.tasks) do
+    if task.id == id then return i, task, store end
   end
 end
 
 function Tasks.Remove(id)
-  local i = indexOf(id)
-  if i then table.remove(db.char.tasks, i) end
+  local i, _, store = indexOf(id)
+  if i then table.remove(store.tasks, i) end
 end
 
 function Tasks.Update(id, fields)

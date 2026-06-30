@@ -4,6 +4,22 @@ All notable changes to WhatTodo are documented here.
 
 ---
 
+## [1.3.0]
+
+### Added
+- **Account-wide tasks**: each task now has a `scope` (`char` or `account`). Account-wide tasks are shared across all characters with shared completion, stored in `db.global.tasks`; per-character tasks live in `db.profile.tasks`. Scope is picked from a dropdown when adding a task and shown as a badge in the panel and on the list (`Core/Tasks.lua`, `UI/AdminPanel.lua`, `UI/Display.lua`, new `L.SCOPE_*` keys)
+- **Copy list between characters**: a "Profiles" section in the config window copies another character's task list onto the current one, using AceDB's native per-character profiles (`db:GetProfiles` / `db:CopyProfile`) (`UI/AdminPanel.lua`, `L.PROFILE_*` keys)
+- **SavedVariables schema migration framework**: ordered, scope-aware migrations with per-scope version tracking (`db.char.dbVersion` replayed per character, `db.global.dbVersion` run once per account), run at init before any module reads the DB (`Core/Migrations.lua`, wired in `WhatTodo.lua`)
+- Busted coverage for migrations and multi-scope tasks (`tests/Migrations_test.lua`, `tests/Tasks_test.lua`; `strtrim`/`GetServerTime`/`GetCurrentRegion` stubs added to `tests/mock_wow_api.lua`)
+
+### Changed
+- The database now uses **per-character profiles** instead of the shared `"Default"` profile (the `true` default-profile argument was dropped from `AceDB:New`). On upgrade, each character is switched to its own profile and its existing `db.char.tasks` are migrated into `db.profile.tasks` — **existing lists are preserved**. This is what makes per-character isolation and the copy-between-characters feature possible (`WhatTodo.lua`, migration v1 in `Core/Migrations.lua`)
+
+### Upgrade notes
+- Your current task list is kept automatically; it simply becomes your character's own profile. From now on, lists are per-character — create **Account** tasks for chores you want shared across every character, and use the **Profiles → Copy** action to clone a list onto another character.
+
+---
+
 ## [1.2.1]
 
 ### Fixed

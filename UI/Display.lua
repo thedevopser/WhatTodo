@@ -156,7 +156,12 @@ function Display.Refresh()
         local row = acquireRow(rowIndex)
         row:ClearAllPoints()
         row:SetPoint("TOPLEFT", frame.content, "TOPLEFT", 4, y)
-        row.text:SetText(task.label)
+        -- tâches account-wide : marqueur discret pour les distinguer des tâches perso
+        if task.scope == "account" then
+          row.text:SetText(("%s  |cff4d4439(%s)|r"):format(task.label, L.SCOPE_ACCOUNT_TAG))
+        else
+          row.text:SetText(task.label)
+        end
         row:SetChecked(Tasks.IsDone(task))
         row.taskId = task.id
         row:SetScript("OnClick", function(self)
