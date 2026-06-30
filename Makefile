@@ -13,6 +13,7 @@ ADDON_FILES := \
 	Core/Reset.lua \
 	Core/Migrations.lua \
 	Core/Tasks.lua \
+	Core/SeasonTemplates.lua \
 	Core/Changelog.lua \
 	UI/AdminPanel.lua \
 	UI/Display.lua \

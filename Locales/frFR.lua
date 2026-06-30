@@ -33,6 +33,29 @@ L.PROFILE_COPY_FROM = "Copier la liste depuis"
 L.PROFILE_COPY      = "Copier"
 L.PROFILE_COPIED    = "Liste copiée depuis %s"
 
+-- Templates de saison (import prérempli)
+L.SEASON_TEMPLATES  = "Templates de saison"
+L.SEASON_IMPORT     = "Importer la sélection"
+L.SEASON_IMPORTED   = "%d tâche(s) importée(s)"
+
+L.TPL_CAT_WORLD     = "Monde — Saison"
+L.TPL_CAT_PVE       = "Donjons & Raid"
+L.TPL_CAT_REP       = "Réputation"
+L.TPL_CAT_EVENT     = "Événements temporaires"
+
+L.TPL_VOID_ASSAULT  = "Assaut du Vide (hebdo)"
+L.TPL_RITUAL_SITES  = "Sites rituels"
+L.TPL_SHOWDOWN      = "Zones d'affrontement (Naigtal / Val)"
+L.TPL_NIGHTMARE_PREY = "3 chasses « Proie de cauchemar »"
+L.TPL_WORLD_EVENT   = "Quête hebdo d'événement mondial"
+L.TPL_HOUSING       = "Quête hebdo de logement"
+L.TPL_RAID_SPOREFALL = "Raid Sporefall (Rotmire)"
+L.TPL_MYTHIC_PLUS   = "Mythique+ (meilleures clés)"
+L.TPL_DELVE         = "Au moins une Faille T11"
+L.TPL_GREAT_VAULT   = "Grand Coffre"
+L.TPL_RENOWN        = "Activités de Renommée hebdo"
+L.TPL_TIMEWALKING   = "Quête hebdo Marche du temps"
+
 -- Compteurs de reset
 L.RESET_IN_DAYS     = "reset dans %dj %dh"
 L.RESET_IN_HOURS    = "reset dans %dh %02dmin"
@@ -43,6 +66,6 @@ L.TOOLTIP_LEFT      = "Clic gauche : afficher/masquer"
 L.TOOLTIP_RIGHT     = "Clic droit : configurer"
 
 -- Popup de nouveautés
-L.CHANGELOG_TITLE   = "WhatTodo — Nouveautés (1.3.0)"
-L.CHANGELOG_BODY    = "Nouveau : une tâche peut désormais être « Compte » (partagée entre tous tes personnages) ou par personnage. Choisis la portée au moment de l'ajouter.\n\nNouveau : une section « Profils » dans la config permet de copier ta liste de tâches depuis un autre personnage.\n\nBon à savoir : chaque personnage conserve maintenant sa propre liste. Tes tâches existantes sont migrées automatiquement — rien n'est perdu."
+L.CHANGELOG_TITLE   = "WhatTodo — Nouveautés (1.4.0)"
+L.CHANGELOG_BODY    = "Nouveau : une section « Templates de saison » dans la config permet d'importer des listes de tâches préremplies pour la saison en cours, groupées par catégorie (Monde, Donjons & Raid, Réputation, Événements). Coche les catégories voulues puis clique sur Importer.\n\nBon à savoir : survole une catégorie pour prévisualiser les tâches ajoutées, et une réimportation ne crée jamais de doublon."
 L.CHANGELOG_CLOSE   = "Compris"

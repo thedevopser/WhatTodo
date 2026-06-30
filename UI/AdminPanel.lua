@@ -4,6 +4,7 @@ WhatTodo.AdminPanel = AdminPanel
 
 local AceGUI = LibStub("AceGUI-3.0")
 local Tasks = WhatTodo.Tasks
+local SeasonTemplates = WhatTodo.SeasonTemplates
 local L = WhatTodo_L
 
 local FREQ_LABELS = {
@@ -190,6 +191,46 @@ function AdminPanel.Open()
     end
   end)
   frame:AddChild(copyBtn)
+
+  -- section templates de saison : import groupé par catégorie (cases à cocher)
+  local templatesHeading = AceGUI:Create("Heading")
+  templatesHeading:SetText(L.SEASON_TEMPLATES)
+  templatesHeading:SetFullWidth(true)
+  frame:AddChild(templatesHeading)
+
+  local selectedCategories = {}
+  for _, category in ipairs(SeasonTemplates.GetCategories()) do
+    local key = category.key
+    local check = AceGUI:Create("CheckBox")
+    check:SetLabel(category.label)
+    check:SetWidth(200)
+    check:SetCallback("OnValueChanged", function(_, _, value)
+      selectedCategories[key] = value or nil
+    end)
+    -- infobulle : liste les tâches associées à la catégorie au survol
+    check:SetCallback("OnEnter", function(widget)
+      GameTooltip:SetOwner(widget.frame, "ANCHOR_RIGHT")
+      GameTooltip:AddLine(category.label)
+      for _, item in ipairs(category.items) do
+        GameTooltip:AddLine(L[item.labelKey], 1, 1, 1)
+      end
+      GameTooltip:Show()
+    end)
+    check:SetCallback("OnLeave", function()
+      GameTooltip:Hide()
+    end)
+    frame:AddChild(check)
+  end
+
+  local importBtn = AceGUI:Create("Button")
+  importBtn:SetText(L.SEASON_IMPORT)
+  importBtn:SetWidth(150)
+  importBtn:SetCallback("OnClick", function()
+    local count = SeasonTemplates.Import(selectedCategories)
+    print(L.SEASON_IMPORTED:format(count))
+    scheduleRefresh()
+  end)
+  frame:AddChild(importBtn)
 
   local heading = AceGUI:Create("Heading")
   heading:SetText(L.EXISTING_TASKS)

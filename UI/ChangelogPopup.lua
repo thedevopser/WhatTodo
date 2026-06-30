@@ -5,7 +5,7 @@ local Changelog = WhatTodo.Changelog
 local L = WhatTodo_L
 
 -- bumper à la main à chaque annonce ; doit rester égal à ## Version du .toc
-local CHANGELOG_VERSION = "1.3.0"
+local CHANGELOG_VERSION = "1.4.0"
 
 -- Définition enregistrée au chargement du fichier : on n'écrit qu'une nouvelle
 -- clé, sans jamais réassigner la globale StaticPopupDialogs (réassigner taint

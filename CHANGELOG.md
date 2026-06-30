@@ -4,6 +4,18 @@ All notable changes to WhatTodo are documented here.
 
 ---
 
+## [1.4.0]
+
+### Added
+- **Season task templates**: a "Season templates" section in the config window imports preset to-do lists for the current season (Midnight S1, 12.0.7), grouped into four categories — World, Dungeons & Raid, Reputation, Limited-time events. The user ticks the categories to import and clicks Import; re-importing is idempotent (existing labels are skipped, no duplicates). Hovering a category checkbox shows a `GameTooltip` previewing the tasks it would add (new `Core/SeasonTemplates.lua`, wired into `UI/AdminPanel.lua`, `L.SEASON_*` and `L.TPL_*` keys in both locales)
+- `Core/SeasonTemplates.lua` keeps the curated content as pure data (ordered categories of `{ labelKey, frequency, scope }`) separate from the UI, reusing `Tasks.Add` / `Tasks.GetAll`; template labels go through `L.TPL_*` so the in-game wording can be corrected without touching logic
+- `Core/SeasonTemplates.lua` added to the `.toc` (after `Core/Tasks.lua`) and to the Makefile `ADDON_FILES` packaging list
+
+### Notes
+- The Season 1 activity names are a best-effort starting point and may need adjusting to match live in-game wording — they are centralized in the locale files for easy editing. No SavedVariables migration is required (templates only call `Tasks.Add`)
+
+---
+
 ## [1.3.0]
 
 ### Added
