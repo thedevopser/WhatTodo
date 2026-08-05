@@ -52,7 +52,9 @@ function Tasks.GetByFrequency(frequency)
   return out
 end
 
-function Tasks.Add(label, frequency, scope)
+-- templateSeason : clé de la saison d'origine quand la tâche vient d'un template
+-- (nil pour une saisie manuelle). Sert au retrait groupé par saison.
+function Tasks.Add(label, frequency, scope, templateSeason)
   label = strtrim(label or "")
   if label == "" then return end
   scope = scope == "account" and "account" or "char"
@@ -64,6 +66,7 @@ function Tasks.Add(label, frequency, scope)
     label = label,
     frequency = frequency,
     scope = scope,
+    templateSeason = templateSeason,
     lastCompleted = nil,
     order = #store.tasks + 1,
   }

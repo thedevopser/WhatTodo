@@ -24,6 +24,20 @@ local frame -- fenêtre AceGUI
 local list  -- ScrollFrame contenant les tâches existantes
 local newFreq = "daily"
 local newScope = "char"
+local selectedSeason = SeasonTemplates.defaultSeason
+
+-- confirmation avant un retrait groupé : l'action est irréversible
+StaticPopupDialogs["WHATTODO_SEASON_REMOVE"] = {
+  text = L.SEASON_REMOVE_CONFIRM,
+  button1 = YES,
+  button2 = NO,
+  timeout = 0,
+  whileDead = 1,
+  hideOnEscape = 1,
+  OnAccept = function(self, data)
+    if data and data.onConfirm then data.onConfirm() end
+  end,
+}
 
 -- on diffère la reconstruction : éviter de libérer un widget pendant son propre callback
 local function scheduleRefresh()
@@ -109,7 +123,7 @@ function AdminPanel.Open()
   frame:SetStatusText(L.ADMIN_STATUS)
   frame:SetLayout("Flow")
   frame:SetWidth(460)
-  frame:SetHeight(520)
+  frame:SetHeight(600) -- sélecteur de saison + 6 catégories : plus haut qu'en 1.4
   frame:SetCallback("OnClose", function(widget)
     AceGUI:Release(widget)
     frame = nil
@@ -192,45 +206,98 @@ function AdminPanel.Open()
   end)
   frame:AddChild(copyBtn)
 
-  -- section templates de saison : import groupé par catégorie (cases à cocher)
+  -- section templates de saison : choix de la saison, puis import ou retrait
+  -- groupé par catégorie (cases à cocher)
   local templatesHeading = AceGUI:Create("Heading")
   templatesHeading:SetText(L.SEASON_TEMPLATES)
   templatesHeading:SetFullWidth(true)
   frame:AddChild(templatesHeading)
 
   local selectedCategories = {}
-  for _, category in ipairs(SeasonTemplates.GetCategories()) do
-    local key = category.key
-    local check = AceGUI:Create("CheckBox")
-    check:SetLabel(category.label)
-    check:SetWidth(200)
-    check:SetCallback("OnValueChanged", function(_, _, value)
-      selectedCategories[key] = value or nil
-    end)
-    -- infobulle : liste les tâches associées à la catégorie au survol
-    check:SetCallback("OnEnter", function(widget)
-      GameTooltip:SetOwner(widget.frame, "ANCHOR_RIGHT")
-      GameTooltip:AddLine(category.label)
-      for _, item in ipairs(category.items) do
-        GameTooltip:AddLine(L[item.labelKey], 1, 1, 1)
-      end
-      GameTooltip:Show()
-    end)
-    check:SetCallback("OnLeave", function()
-      GameTooltip:Hide()
-    end)
-    frame:AddChild(check)
+
+  local seasonDD = AceGUI:Create("Dropdown")
+  seasonDD:SetLabel(L.TPL_SEASON)
+  seasonDD:SetWidth(250)
+  -- ordre du tableau des saisons : la plus récente en premier, pas de tri
+  local seasonChoices, seasonOrder = {}, {}
+  for _, season in ipairs(SeasonTemplates.GetSeasons()) do
+    seasonChoices[season.key] = season.label
+    seasonOrder[#seasonOrder + 1] = season.key
+  end
+  seasonDD:SetList(seasonChoices, seasonOrder)
+  seasonDD:SetValue(selectedSeason)
+  frame:AddChild(seasonDD)
+
+  -- conteneur dédié : ses enfants sont reconstruits à chaque changement de saison
+  local templatesGroup = AceGUI:Create("SimpleGroup")
+  templatesGroup:SetFullWidth(true)
+  templatesGroup:SetLayout("Flow")
+  frame:AddChild(templatesGroup)
+
+  local function buildCategoryChecks(seasonKey)
+    templatesGroup:ReleaseChildren()
+    for _, category in ipairs(SeasonTemplates.GetCategories(seasonKey)) do
+      local key = category.key
+      local check = AceGUI:Create("CheckBox")
+      check:SetLabel(category.label)
+      check:SetWidth(200)
+      check:SetCallback("OnValueChanged", function(_, _, value)
+        selectedCategories[key] = value or nil
+      end)
+      -- infobulle : liste les tâches associées à la catégorie au survol
+      check:SetCallback("OnEnter", function(widget)
+        GameTooltip:SetOwner(widget.frame, "ANCHOR_RIGHT")
+        GameTooltip:AddLine(category.label)
+        for _, item in ipairs(category.items) do
+          GameTooltip:AddLine(L[item.labelKey], 1, 1, 1)
+        end
+        GameTooltip:Show()
+      end)
+      check:SetCallback("OnLeave", function()
+        GameTooltip:Hide()
+      end)
+      templatesGroup:AddChild(check)
+    end
+  end
+
+  seasonDD:SetCallback("OnValueChanged", function(_, _, value)
+    selectedSeason = value
+    wipe(selectedCategories) -- les catégories cochées ne valent que pour une saison
+    -- différé : ne pas libérer les cases pendant le callback du dropdown
+    C_Timer.After(0, function() buildCategoryChecks(selectedSeason) end)
+  end)
+
+  buildCategoryChecks(selectedSeason)
+
+  local function hasSelection()
+    return next(selectedCategories) ~= nil
   end
 
   local importBtn = AceGUI:Create("Button")
   importBtn:SetText(L.SEASON_IMPORT)
   importBtn:SetWidth(150)
   importBtn:SetCallback("OnClick", function()
-    local count = SeasonTemplates.Import(selectedCategories)
+    if not hasSelection() then return end
+    local count = SeasonTemplates.Import(selectedSeason, selectedCategories)
     print(L.SEASON_IMPORTED:format(count))
     scheduleRefresh()
   end)
   frame:AddChild(importBtn)
+
+  local removeBtn = AceGUI:Create("Button")
+  removeBtn:SetText(L.SEASON_REMOVE)
+  removeBtn:SetWidth(150)
+  removeBtn:SetCallback("OnClick", function()
+    if not hasSelection() then return end
+    StaticPopup_Show("WHATTODO_SEASON_REMOVE", nil, nil, {
+      onConfirm = function()
+        local count = SeasonTemplates.Remove(selectedSeason, selectedCategories)
+        print(L.SEASON_REMOVED:format(count))
+        scheduleRefresh()
+      end,
+    })
+  end)
+  frame:AddChild(removeBtn)
 
   local heading = AceGUI:Create("Heading")
   heading:SetText(L.EXISTING_TASKS)
