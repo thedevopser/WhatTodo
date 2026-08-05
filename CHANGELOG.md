@@ -4,6 +4,28 @@ All notable changes to WhatTodo are documented here.
 
 ---
 
+## [1.5.0]
+
+### Added
+- **Midnight Season 2 templates** (patch 12.1.0, *Curse of Ula'tek* — live 12 Aug 2026 EU, season start 19 Aug 2026 EU): 28 tasks across six categories, covering the three frequencies. Daily: Curse Surges & rares on the Coiled Isle, Cursed Fishing, Ral'kala bonus, Mythic 0 (which switches to a daily reset when the season opens). Weekly: The Venomous Abyss raid, Mythic+, the Tidebound Grotto lair, Nebulous Voidcore bonus roll, T8+ and Bountiful Delves, Great Vault, crest cap, Prey hunts, Zul'jarra's Forces renown, Corrosive Souls, Delver's / Preyhunter's Journeys, Conquest objective, profession treatise. Monthly: Trading Post / Traveler's Log
+- **Season selector**: `Core/SeasonTemplates.lua` now holds an ordered list of seasons (`SeasonTemplates.seasons`, most recent first) instead of a single flat category list. A Dropdown in the config window switches between Midnight S2 and S1; the category checkboxes are rebuilt for the selected season (`UI/AdminPanel.lua`, `L.TPL_SEASON*` keys)
+- **Two new template categories**: PvP and Professions (`L.TPL_CAT_PVP`, `L.TPL_CAT_CRAFT`)
+- **Bulk removal of season tasks**: a "Remove selected" button deletes, behind a `StaticPopup` confirmation, the tasks matching the selected season and categories — the missing counterpart to Import when rolling from one season to the next (`SeasonTemplates.Remove`, `L.SEASON_REMOVE*` keys)
+- **Template provenance**: `Tasks.Add` takes an optional fourth argument `templateSeason`, persisted on the task. Removal only targets tasks carrying the season's marker, or none at all (tasks imported with 1.4.0, or typed by hand with an identical label) — a task marked with a *different* season is always preserved, which is what protects the labels shared between S1 and S2 (Great Vault, Mythic+, housing weekly, world event, Timewalking)
+- Busted coverage for season templates: structure, localization completeness, import dedup across seasons, and every removal path (`tests/SeasonTemplates_test.lua`, 18 specs)
+
+### Changed
+- `SeasonTemplates.GetCategories(seasonKey)` takes an optional season key (defaults to `SeasonTemplates.defaultSeason`); `SeasonTemplates.Import(seasonKey, categoryKeys)` gained a leading season argument. Both return empty / 0 for an unknown season
+- Config window height raised to 600 to fit the season selector and the six categories
+
+### Notes
+- French labels reuse the official in-game names (Île Annelée, Abîme Venimeux, Autel des crochets, Grotte des Marées, Gouffres / Gouffres abondants, la Traque, Résurgences maudites, Pêche maudite, Forces de Zul'jarra, Noyau du Vide nébuleux, Âmes corrosives / Autel de la corrosion). Where no official French name was found, the English term is kept as-is (Vaults of Atal'Utek, Housing Endeavor)
+- Season 2 wording is based on pre-patch information and should be checked against the live client; every label lives in the locale files. The crest terminology and the target Delve tier (T8) are the most likely to need adjusting
+- `## Interface` deliberately stays at `120007` so the addon keeps loading on the live 12.0.7 client; it is to be bumped to `120100` when patch 12.1.0 goes live
+- No SavedVariables migration is required: `templateSeason` is a new optional field, absent on existing tasks and handled as such
+
+---
+
 ## [1.4.0]
 
 ### Added
