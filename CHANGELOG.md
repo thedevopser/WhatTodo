@@ -4,6 +4,16 @@ All notable changes to WhatTodo are documented here.
 
 ---
 
+## [1.5.1]
+
+### Changed
+- `## Interface` passé à `120100` pour le patch Midnight 12.1.0 (*Curse of Ula'tek*), comme annoncé dans les notes de la 1.5.0
+
+### Notes
+- Mise à jour purement technique : le popup de nouveautés n'est pas déclenché (`CHANGELOG_VERSION` reste à `1.5.0` dans `UI/ChangelogPopup.lua`)
+
+---
+
 ## [1.5.0]
 
 ### Added

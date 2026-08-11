@@ -1,7 +1,7 @@
 # WhatTodo
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![WoW Interface](https://img.shields.io/badge/WoW-12.0.5%20Midnight-orange)
+![Version](https://img.shields.io/badge/version-1.5.1-blue)
+![WoW Interface](https://img.shields.io/badge/WoW-12.1.0%20Midnight-orange)
 ![Lua](https://img.shields.io/badge/Lua-5.1-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -13,7 +13,7 @@
 
 ### Présentation
 
-WhatTodo est un addon World of Warcraft (Midnight, 12.0.5) qui affiche une **liste de tâches** se réinitialisant automatiquement selon leur fréquence. Chaque tâche et son état de complétion sont persistés **par personnage** via AceDB.
+WhatTodo est un addon World of Warcraft (Midnight, 12.1.0) qui affiche une **liste de tâches** se réinitialisant automatiquement selon leur fréquence. Chaque tâche et son état de complétion sont persistés **par personnage** via AceDB.
 
 Les resets ont lieu à **5h00, heure serveur** :
 
@@ -70,7 +70,7 @@ Choisir une fréquence, saisir un libellé, cliquer sur **Ajouter**. Chaque tâc
 
 ### Overview
 
-WhatTodo is a World of Warcraft addon (Midnight, 12.0.5) that displays a **to-do list** which resets automatically based on each task's frequency. Tasks and their completion state are stored **per character** through AceDB.
+WhatTodo is a World of Warcraft addon (Midnight, 12.1.0) that displays a **to-do list** which resets automatically based on each task's frequency. Tasks and their completion state are stored **per character** through AceDB.
 
 Resets happen at **5:00 AM server time**:
 

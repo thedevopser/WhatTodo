@@ -4,7 +4,8 @@ WhatTodo.ChangelogPopup = ChangelogPopup
 local Changelog = WhatTodo.Changelog
 local L = WhatTodo_L
 
--- bumper à la main à chaque annonce ; doit rester égal à ## Version du .toc
+-- Bumper à la main uniquement quand on veut annoncer les nouveautés au login.
+-- Peut rester en retard sur ## Version du .toc pour un patch technique (ex. 1.5.1).
 local CHANGELOG_VERSION = "1.5.0"
 
 -- Définition enregistrée au chargement du fichier : on n'écrit qu'une nouvelle
