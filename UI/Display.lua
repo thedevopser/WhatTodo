@@ -9,6 +9,18 @@ local L = WhatTodo_L
 local CHROME = 48
 -- hauteur minimale du cadre quand peu ou pas de tâches
 local MIN_HEIGHT = 120
+-- largeur minimale (garde le titre et le bouton fermer lisibles)
+local MIN_WIDTH = 280
+-- plafond de largeur, proportionnel à l'écran
+local MAX_WIDTH_RATIO = 0.4
+-- marges gauche/droite du viewport (cf. SetPoint du ScrollFrame)
+local SIDE_MARGIN = 12
+-- décalage X des lignes dans le contenu
+local ROW_INSET = 4
+-- écart entre la case à cocher et son libellé
+local TEXT_GAP = 4
+-- arrondi de la largeur : évite que le cadre respire quand le compteur change de longueur
+local WIDTH_STEP = 10
 
 local FREQ_ORDER = { "daily", "weekly", "monthly" }
 local FREQ_TITLES = {
@@ -36,11 +48,23 @@ local function acquireRow(index)
   if not row then
     row = CreateFrame("CheckButton", nil, frame.content, "UICheckButtonTemplate")
     row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-    row.text:SetPoint("LEFT", row, "RIGHT", 4, 0)
+    row.text:SetPoint("LEFT", row, "RIGHT", TEXT_GAP, 0)
     row.text:SetTextColor(0.12, 0.1, 0.08)
     -- ombre coupée : sur texte sombre elle rend le rendu flou
     row.text:SetShadowColor(0, 0, 0, 0)
     row.text:SetShadowOffset(0, 0)
+    -- une seule ligne : au-delà de la largeur imposée, le texte est tronqué par « … »
+    row.text:SetJustifyH("LEFT")
+    row.text:SetWordWrap(false)
+    row:SetScript("OnEnter", function(self)
+      -- infobulle uniquement quand le libellé est effectivement tronqué
+      if self.fullLabel and self.text:GetStringWidth() > self.text:GetWidth() then
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetText(self.fullLabel, 1, 1, 1, true)
+        GameTooltip:Show()
+      end
+    end)
+    row:SetScript("OnLeave", function() GameTooltip:Hide() end)
     frame.rows[index] = row
   end
   row:Show()
@@ -54,6 +78,8 @@ local function acquireHeader(index)
     header = frame.content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     header:SetShadowColor(0, 0, 0, 0)
     header:SetShadowOffset(0, 0)
+    header:SetJustifyH("LEFT")
+    header:SetWordWrap(false)
     frame.headers[index] = header
   end
   header:Show()
@@ -136,6 +162,8 @@ function Display.Refresh()
   local y = 0
   local rowIndex = 0
   local headerIndex = 0
+  -- bord droit du contenu le plus large rencontré, sert à dimensionner le cadre
+  local maxRight = 0
 
   for _, freq in ipairs(FREQ_ORDER) do
     local list = Tasks.GetByFrequency(freq)
@@ -149,19 +177,24 @@ function Display.Refresh()
       header:SetTextColor(0.2, 0.1, 0.02)
       header:SetText(("%s  |cff4d4439(%s)|r"):format(
         FREQ_TITLES[freq], formatCountdown(nextReset - now)))
+      maxRight = math.max(maxRight, header:GetStringWidth())
       y = y - 20
 
       for _, task in ipairs(list) do
         rowIndex = rowIndex + 1
         local row = acquireRow(rowIndex)
         row:ClearAllPoints()
-        row:SetPoint("TOPLEFT", frame.content, "TOPLEFT", 4, y)
+        row:SetPoint("TOPLEFT", frame.content, "TOPLEFT", ROW_INSET, y)
         -- tâches account-wide : marqueur discret pour les distinguer des tâches perso
         if task.scope == "account" then
           row.text:SetText(("%s  |cff4d4439(%s)|r"):format(task.label, L.SCOPE_ACCOUNT_TAG))
+          row.fullLabel = ("%s (%s)"):format(task.label, L.SCOPE_ACCOUNT_TAG)
         else
           row.text:SetText(task.label)
+          row.fullLabel = task.label
         end
+        maxRight = math.max(maxRight,
+          ROW_INSET + row:GetWidth() + TEXT_GAP + row.text:GetStringWidth())
         row:SetChecked(Tasks.IsDone(task))
         row.taskId = task.id
         row:SetScript("OnClick", function(self)
@@ -174,8 +207,26 @@ function Display.Refresh()
   end
 
   local contentHeight = -y
-  frame.content:SetWidth(frame.scroll:GetWidth())
+
+  -- largeur : ajustée au libellé le plus long, arrondie, bornée par l'écran
+  local maxWidth = math.floor(UIParent:GetWidth() * MAX_WIDTH_RATIO)
+  local wantedWidth = math.ceil((maxRight + 2 * SIDE_MARGIN) / WIDTH_STEP) * WIDTH_STEP
+  local w = math.max(MIN_WIDTH, math.min(wantedWidth, maxWidth))
+  frame:SetWidth(w)
+
+  -- largeur du viewport déduite du cadre : l'ancrage du ScrollFrame n'est pas encore propagé
+  local contentWidth = w - 2 * SIDE_MARGIN
+  frame.content:SetWidth(contentWidth)
   frame.content:SetHeight(math.max(contentHeight, 1))
+
+  -- passe d'application : contraint les textes, ce qui déclenche la troncature si besoin
+  for i = 1, rowIndex do
+    local row = frame.rows[i]
+    row.text:SetWidth(contentWidth - ROW_INSET - row:GetWidth() - TEXT_GAP)
+  end
+  for i = 1, headerIndex do
+    frame.headers[i]:SetWidth(contentWidth)
+  end
 
   local maxHeight = math.floor(UIParent:GetHeight() * 0.8)
   local wanted = contentHeight + CHROME
