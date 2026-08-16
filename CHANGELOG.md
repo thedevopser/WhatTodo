@@ -4,14 +4,23 @@ All notable changes to WhatTodo are documented here.
 
 ---
 
+## [1.5.2]
+
+### Fixed
+- **Long task labels are no longer clipped**: the display window now computes its width from the widest rendered label instead of using a hardcoded 280px. Width is measured with `GetStringWidth()` during the layout pass (checkbox width and gaps included, colour codes excluded), rounded up to a 10px step so the frame does not jitter when a reset countdown changes length, then clamped between 280px and 40% of `UIParent:GetWidth()` — the same clamp shape already used for the height (`UI/Display.lua`)
+- Labels that still exceed the cap are truncated with an ellipsis on a single line (`SetWordWrap(false)`), so row height and the existing height computation are unchanged. Hovering a truncated row shows a `GameTooltip` with the full label, account-wide `(account)` tag included
+
+### Notes
+- The viewport width is derived arithmetically from the frame (`width - 2 × 12`) rather than read back from the `ScrollFrame`, whose anchor has just been resized
+- No new locale keys, no SavedVariables change, no `Core/` change — the Busted suite is unaffected
+- Changelog popup is triggered for this release (`CHANGELOG_VERSION` bumped to `1.5.2` in `UI/ChangelogPopup.lua`, FR/EN strings updated)
+
+---
+
 ## [1.5.1]
 
 ### Changed
-- `## Interface` passé à `120100` pour le patch Midnight 12.1.0 (*Curse of Ula'tek*), comme annoncé dans les notes de la 1.5.0
-
-### Notes
-- Mise à jour purement technique : le popup de nouveautés n'est pas déclenché (`CHANGELOG_VERSION` reste à `1.5.0` dans `UI/ChangelogPopup.lua`)
-
+- `## Interface` bumped to `120100` for the Midnight 12.1.0 patch (*Curse of Ula'tek*), as announced in the 1.5.0 notes
 ---
 
 ## [1.5.0]

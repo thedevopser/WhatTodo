@@ -1,6 +1,6 @@
 # WhatTodo
 
-![Version](https://img.shields.io/badge/version-1.5.1-blue)
+![Version](https://img.shields.io/badge/version-1.5.2-blue)
 ![WoW Interface](https://img.shields.io/badge/WoW-12.1.0%20Midnight-orange)
 ![Lua](https://img.shields.io/badge/Lua-5.1-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)

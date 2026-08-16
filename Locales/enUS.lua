@@ -101,6 +101,6 @@ L.TOOLTIP_LEFT      = "Left click: show/hide"
 L.TOOLTIP_RIGHT     = "Right click: configure"
 
 -- Popup de nouveautés
-L.CHANGELOG_TITLE   = "WhatTodo — What's new (1.5.0)"
-L.CHANGELOG_BODY    = "Midnight Season 2 is here. The \"Season templates\" section now has a Season selector: pick Midnight S2 (Curse of Ula'tek) or go back to S1, then tick the categories to import. Two new categories: PvP and Professions.\n\nAlso new: \"Remove selected\" deletes in bulk the tasks imported for the chosen season and categories — handy for clearing out Season 1. Tasks you typed yourself are never touched."
+L.CHANGELOG_TITLE   = "WhatTodo — What's new (1.5.2)"
+L.CHANGELOG_BODY    = "No more clipped task names. The list window now sizes itself to the longest label, up to 40% of the screen width, and shrinks back when your list gets shorter.\n\nIf a label is still too long for that cap, it ends with an ellipsis and the full text shows up in a tooltip when you hover the row."
 L.CHANGELOG_CLOSE   = "Got it"

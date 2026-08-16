@@ -104,6 +104,6 @@ L.TOOLTIP_LEFT      = "Clic gauche : afficher/masquer"
 L.TOOLTIP_RIGHT     = "Clic droit : configurer"
 
 -- Popup de nouveautés
-L.CHANGELOG_TITLE   = "WhatTodo — Nouveautés (1.5.0)"
-L.CHANGELOG_BODY    = "La saison 2 de Midnight est là. La section « Templates de saison » a désormais un sélecteur de Saison : choisis Midnight S2 (La malédiction d'Ula'tek) ou reviens à la S1, puis coche les catégories à importer. Deux nouvelles catégories : JcJ et Métiers.\n\nAussi nouveau : « Retirer la sélection » supprime d'un coup les tâches importées pour la saison et les catégories choisies — pratique pour faire le ménage de la saison 1. Les tâches que tu as saisies toi-même ne sont jamais touchées."
+L.CHANGELOG_TITLE   = "WhatTodo — Nouveautés (1.5.2)"
+L.CHANGELOG_BODY    = "Fini les noms de tâches coupés. La fenêtre de liste s'adapte maintenant à la longueur du libellé le plus long, jusqu'à 40 % de la largeur de l'écran, et se resserre quand la liste raccourcit.\n\nSi un libellé dépasse encore cette limite, il se termine par « … » et le texte complet s'affiche en infobulle au survol de la ligne."
 L.CHANGELOG_CLOSE   = "Compris"
