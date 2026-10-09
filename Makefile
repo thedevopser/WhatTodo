@@ -12,11 +12,14 @@ ADDON_FILES := \
 	Locales/frFR.lua \
 	Core/Reset.lua \
 	Core/Migrations.lua \
+	Core/Themes.lua \
+	Core/DisplaySettings.lua \
 	Core/Tasks.lua \
 	Core/SeasonTemplates.lua \
 	Core/Changelog.lua \
 	UI/AdminPanel.lua \
 	UI/Display.lua \
+	UI/Options.lua \
 	UI/Minimap.lua \
 	UI/ChangelogPopup.lua \
 	Libs/embeds.xml \

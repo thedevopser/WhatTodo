@@ -4,6 +4,32 @@ All notable changes to WhatTodo are documented here.
 
 ---
 
+## [1.6.0]
+
+### Added
+- **Settings panel**: WhatTodo now has an entry in Esc > Options > AddOns, also opened with `/wt options`. Settings are account-wide (`db.global.display`) and normalized on read by `Core/DisplaySettings.lua`, so a corrupted or hand-edited value falls back to a safe one (`UI/Options.lua`, built with AceConfig)
+- **Themes**: Parchment (default), Dark parchment, Minimal dark, Blizzard and Transparent. Each theme is pure data in `Core/Themes.lua` (background, border, title/header/text/countdown/completed colours, text shadow); an unknown theme falls back to Parchment
+- **Completed tasks**: shown normally, greyed out and struck through (default), or hidden. A section whose tasks are all done keeps its header
+- **Section progress and folding**: each header shows `done/total` for its frequency, hidden tasks included. Clicking a header folds or unfolds the section; the state is saved per character (`db.char.display.collapsed`)
+- **Window settings**: lock position, scale (50–200 %), background opacity (text stays opaque)
+- **Hide in combat**: the list hides on `PLAYER_REGEN_DISABLED` and comes back on `PLAYER_REGEN_ENABLED` if it was shown. The saved shown/hidden state is never changed by combat, including after a `/reload` in combat
+- **Task reordering**: up/down arrows on each row of the management panel. `Tasks.Move` renumbers the frequency before swapping, which removes the order ties between character and account tasks
+- Busted coverage for settings normalization, themes (fields, both locales), `Tasks.Progress`, `Tasks.VisibleForDisplay` and `Tasks.Move` (`tests/DisplaySettings_test.lua`, `tests/Themes_test.lua`, `tests/Tasks_test.lua`)
+
+### Changed
+- `## Interface` now lists `120100, 120105`: the addon loads on both the current 12.1.0 client and the Midnight 12.1.5 patch
+- A task moved to another frequency is placed at the end of that frequency
+- `/wt` and the minimap button toggle the saved shown/hidden state; while hidden in combat, the change applies when combat ends
+- The list is no longer recomputed by the 60 s ticker while it is hidden
+- Section collapse icons and reorder arrows use native textures, since the game fonts have no ▸/▾/▲/▼ glyphs
+- Load order: `Core/Themes.lua` and `Core/DisplaySettings.lua` now load before `Core/Tasks.lua`; `UI/Options.lua` after `UI/Display.lua`
+
+### Notes
+- No SavedVariables migration: the new fields come from AceDB defaults
+- Changelog popup triggered for this release (`CHANGELOG_VERSION` bumped to `1.6.0`)
+
+---
+
 ## [1.5.2]
 
 ### Fixed

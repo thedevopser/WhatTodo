@@ -91,6 +91,9 @@ L.TPL_S2_TREATISE       = "Profession treatise"
 L.TPL_S2_CRAFT_ORDERS   = "Crafting orders"
 L.TPL_S2_TRADING_POST   = "Trading Post / Traveler's Log"
 
+-- Titre de section : libellé, tâches faites, total
+L.SECTION_PROGRESS  = "%s %d/%d"
+
 -- Compteurs de reset
 L.RESET_IN_DAYS     = "reset in %dd %dh"
 L.RESET_IN_HOURS    = "reset in %dh %02dmin"
@@ -100,7 +103,29 @@ L.TOOLTIP_COUNT     = "%s: %d"
 L.TOOLTIP_LEFT      = "Left click: show/hide"
 L.TOOLTIP_RIGHT     = "Right click: configure"
 
+-- Options (Échap > Options > AddOns)
+L.OPT_LOCKED        = "Lock window position"
+L.OPT_LOCKED_DESC   = "Prevents the list window from being dragged."
+L.OPT_SCALE         = "Scale"
+L.OPT_SCALE_DESC    = "Size of the list window."
+L.OPT_BACKGROUND_ALPHA = "Background opacity"
+L.OPT_BACKGROUND_ALPHA_DESC = "Opacity of the list window background and border. Text stays fully opaque."
+L.OPT_COMPLETED_STYLE = "Completed tasks"
+L.OPT_COMPLETED_STYLE_DESC = "How tasks already done for the current period appear in the list."
+L.OPT_COMPLETED_SHOW = "Show normally"
+L.OPT_COMPLETED_DIM = "Grey out and strike through"
+L.OPT_COMPLETED_HIDE = "Hide"
+L.OPT_HIDE_IN_COMBAT = "Hide in combat"
+L.OPT_HIDE_IN_COMBAT_DESC = "Hides the list while you are in combat and brings it back afterwards."
+L.OPT_THEME         = "Theme"
+L.OPT_THEME_DESC    = "Look of the list window."
+L.THEME_PARCHMENT   = "Parchment"
+L.THEME_PARCHMENT_DARK = "Dark parchment"
+L.THEME_DARK        = "Minimal dark"
+L.THEME_BLIZZARD    = "Blizzard"
+L.THEME_TRANSPARENT = "Transparent"
+
 -- Popup de nouveautés
-L.CHANGELOG_TITLE   = "WhatTodo — What's new (1.5.2)"
-L.CHANGELOG_BODY    = "No more clipped task names. The list window now sizes itself to the longest label, up to 40% of the screen width, and shrinks back when your list gets shorter.\n\nIf a label is still too long for that cap, it ends with an ellipsis and the full text shows up in a tooltip when you hover the row."
+L.CHANGELOG_TITLE   = "WhatTodo — What's new (1.6.0)"
+L.CHANGELOG_BODY    = "The list is now yours to shape. Open the settings with /wt options (or Esc > Options > AddOns) to pick one of five themes, grey out or hide completed tasks, change the scale and background opacity, lock the window or hide it in combat.\n\nEach section header shows your progress (3/7) and folds away with a click. In the management panel, the arrows next to each task change its order."
 L.CHANGELOG_CLOSE   = "Got it"

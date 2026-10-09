@@ -7,7 +7,7 @@ WhatTodo.addon = addon
 local dbDefaults = {
   char = {
     dbVersion = 0,
-    display = { shown = true, point = "CENTER", x = 0, y = 0 },
+    display = { shown = true, point = "CENTER", x = 0, y = 0, collapsed = {} },
     minimap = { hide = false },
   },
   profile = {
@@ -19,6 +19,7 @@ local dbDefaults = {
     nextId = 1,
     dbVersion = 0,
     lastSeenVersion = nil,
+    display = CopyTable(WhatTodo.DisplaySettings.DEFAULTS),
   },
 }
 
@@ -36,6 +37,7 @@ function addon:OnInitialize()
   WhatTodo.Tasks.Init(self.db)
   WhatTodo.AdminPanel.Setup()
   WhatTodo.Minimap.Setup(self.db)
+  WhatTodo.Options.Setup(self.db)
   self:RegisterChatCommand("wt", "HandleSlash")
   self:RegisterChatCommand("whattodo", "HandleSlash")
 end
@@ -44,18 +46,17 @@ function addon:OnEnable()
   WhatTodo.Display.Build(self.db)
   WhatTodo.ChangelogPopup.Initialize(self.db)
   self:RegisterEvent("PLAYER_ENTERING_WORLD", function() WhatTodo.Display.Refresh() end)
+  self:RegisterEvent("PLAYER_REGEN_DISABLED", function() WhatTodo.Display.SetInCombat(true) end)
+  self:RegisterEvent("PLAYER_REGEN_ENABLED", function() WhatTodo.Display.SetInCombat(false) end)
   self.ticker = C_Timer.NewTicker(60, function() WhatTodo.Display.Refresh() end)
-  if self.db.char.display.shown then
-    WhatTodo.Display.Show()
-  else
-    WhatTodo.Display.Hide()
-  end
 end
 
 function addon:HandleSlash(input)
   input = strtrim(input or ""):lower()
   if input == "config" then
     WhatTodo.AdminPanel.Open()
+  elseif input == "options" then
+    WhatTodo.Options.Open()
   else
     WhatTodo.Display.Toggle()
   end

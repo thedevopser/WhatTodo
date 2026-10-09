@@ -94,6 +94,9 @@ L.TPL_S2_TREATISE       = "Traité de métier"
 L.TPL_S2_CRAFT_ORDERS   = "Commandes de craft"
 L.TPL_S2_TRADING_POST   = "Comptoir d'échange / Journal du voyageur"
 
+-- Titre de section : libellé, tâches faites, total
+L.SECTION_PROGRESS  = "%s %d/%d"
+
 -- Compteurs de reset
 L.RESET_IN_DAYS     = "reset dans %dj %dh"
 L.RESET_IN_HOURS    = "reset dans %dh %02dmin"
@@ -103,7 +106,29 @@ L.TOOLTIP_COUNT     = "%s : %d"
 L.TOOLTIP_LEFT      = "Clic gauche : afficher/masquer"
 L.TOOLTIP_RIGHT     = "Clic droit : configurer"
 
+-- Options (Échap > Options > AddOns)
+L.OPT_LOCKED        = "Verrouiller la position de la fenêtre"
+L.OPT_LOCKED_DESC   = "Empêche de déplacer la fenêtre de liste."
+L.OPT_SCALE         = "Échelle"
+L.OPT_SCALE_DESC    = "Taille de la fenêtre de liste."
+L.OPT_BACKGROUND_ALPHA = "Opacité du fond"
+L.OPT_BACKGROUND_ALPHA_DESC = "Opacité du fond et du bord de la fenêtre de liste. Le texte reste entièrement opaque."
+L.OPT_COMPLETED_STYLE = "Tâches faites"
+L.OPT_COMPLETED_STYLE_DESC = "Apparence dans la liste des tâches déjà faites pour la période en cours."
+L.OPT_COMPLETED_SHOW = "Afficher normalement"
+L.OPT_COMPLETED_DIM = "Griser et barrer"
+L.OPT_COMPLETED_HIDE = "Masquer"
+L.OPT_HIDE_IN_COMBAT = "Masquer en combat"
+L.OPT_HIDE_IN_COMBAT_DESC = "Masque la liste pendant les combats et la réaffiche ensuite."
+L.OPT_THEME         = "Thème"
+L.OPT_THEME_DESC    = "Apparence de la fenêtre de liste."
+L.THEME_PARCHMENT   = "Parchemin"
+L.THEME_PARCHMENT_DARK = "Parchemin sombre"
+L.THEME_DARK        = "Sombre minimaliste"
+L.THEME_BLIZZARD    = "Blizzard"
+L.THEME_TRANSPARENT = "Transparent"
+
 -- Popup de nouveautés
-L.CHANGELOG_TITLE   = "WhatTodo — Nouveautés (1.5.2)"
-L.CHANGELOG_BODY    = "Fini les noms de tâches coupés. La fenêtre de liste s'adapte maintenant à la longueur du libellé le plus long, jusqu'à 40 % de la largeur de l'écran, et se resserre quand la liste raccourcit.\n\nSi un libellé dépasse encore cette limite, il se termine par « … » et le texte complet s'affiche en infobulle au survol de la ligne."
+L.CHANGELOG_TITLE   = "WhatTodo — Nouveautés (1.6.0)"
+L.CHANGELOG_BODY    = "La liste se règle désormais à votre goût. Ouvrez les options avec /wt options (ou Échap > Options > AddOns) pour choisir parmi cinq thèmes, griser ou masquer les tâches faites, régler l'échelle et l'opacité du fond, verrouiller la fenêtre ou la masquer en combat.\n\nChaque en-tête de section affiche votre avancement (3/7) et se replie d'un clic. Dans le panneau de gestion, les flèches à côté de chaque tâche changent son ordre."
 L.CHANGELOG_CLOSE   = "Compris"

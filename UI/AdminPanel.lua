@@ -44,15 +44,37 @@ local function scheduleRefresh()
   C_Timer.After(0, function() AdminPanel.Refresh() end)
 end
 
+local MOVE_ICON_SIZE = 16
+local MOVE_ICONS = {
+  up = "Interface\\ChatFrame\\UI-ChatIcon-ScrollUp-Up",
+  down = "Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up",
+}
+
+-- les polices du jeu n'ont pas de glyphes ▲/▼ : flèches natives en icônes cliquables
+local function buildMoveButton(id, direction)
+  local button = AceGUI:Create("Icon")
+  button:SetImage(MOVE_ICONS[direction])
+  button:SetImageSize(MOVE_ICON_SIZE, MOVE_ICON_SIZE)
+  button:SetWidth(24)
+  button:SetCallback("OnClick", function()
+    Tasks.Move(id, direction)
+    scheduleRefresh()
+  end)
+  return button
+end
+
 local function buildRow(task)
   local id = task.id
   local row = AceGUI:Create("SimpleGroup")
   row:SetFullWidth(true)
   row:SetLayout("Flow")
 
+  row:AddChild(buildMoveButton(id, "up"))
+  row:AddChild(buildMoveButton(id, "down"))
+
   local nameBox = AceGUI:Create("EditBox")
   nameBox:SetText(task.label)
-  nameBox:SetWidth(190)
+  nameBox:SetWidth(160)
   nameBox:SetCallback("OnEnterPressed", function(_, _, value)
     value = strtrim(value)
     if value ~= "" then
@@ -65,7 +87,7 @@ local function buildRow(task)
   local freqDD = AceGUI:Create("Dropdown")
   freqDD:SetList(FREQ_LABELS, FREQ_ORDER)
   freqDD:SetValue(task.frequency)
-  freqDD:SetWidth(130)
+  freqDD:SetWidth(110)
   freqDD:SetCallback("OnValueChanged", function(_, _, value)
     Tasks.Update(id, { frequency = value })
     scheduleRefresh()
@@ -79,12 +101,12 @@ local function buildRow(task)
   else
     badge:SetText("")
   end
-  badge:SetWidth(70)
+  badge:SetWidth(55)
   row:AddChild(badge)
 
   local del = AceGUI:Create("Button")
   del:SetText(L.DELETE)
-  del:SetWidth(90)
+  del:SetWidth(80)
   del:SetCallback("OnClick", function()
     Tasks.Remove(id)
     scheduleRefresh()
