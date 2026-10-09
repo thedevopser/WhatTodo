@@ -17,6 +17,7 @@ All notable changes to WhatTodo are documented here.
 - Busted coverage for settings normalization, themes (fields, both locales), `Tasks.Progress`, `Tasks.VisibleForDisplay` and `Tasks.Move` (`tests/DisplaySettings_test.lua`, `tests/Themes_test.lua`, `tests/Tasks_test.lua`)
 
 ### Changed
+- `## Interface` now lists `120100, 120105`: the addon loads on both the current 12.1.0 client and the Midnight 12.1.5 patch
 - A task moved to another frequency is placed at the end of that frequency
 - `/wt` and the minimap button toggle the saved shown/hidden state; while hidden in combat, the change applies when combat ends
 - The list is no longer recomputed by the 60 s ticker while it is hidden
