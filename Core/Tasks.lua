@@ -104,12 +104,18 @@ function Tasks.IsDone(task)
   return Reset.IsDone(task.lastCompleted, task.frequency, now(), offset(), weeklyResetWday())
 end
 
-function Tasks.RemainingCount(frequency)
-  local count = 0
-  for _, task in ipairs(Tasks.GetByFrequency(frequency)) do
-    if not Tasks.IsDone(task) then count = count + 1 end
+function Tasks.Progress(frequency)
+  local list = Tasks.GetByFrequency(frequency)
+  local done = 0
+  for _, task in ipairs(list) do
+    if Tasks.IsDone(task) then done = done + 1 end
   end
-  return count
+  return done, #list
+end
+
+function Tasks.RemainingCount(frequency)
+  local done, total = Tasks.Progress(frequency)
+  return total - done
 end
 
 function Tasks.VisibleForDisplay(list, completedStyle)

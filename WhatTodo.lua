@@ -7,7 +7,7 @@ WhatTodo.addon = addon
 local dbDefaults = {
   char = {
     dbVersion = 0,
-    display = { shown = true, point = "CENTER", x = 0, y = 0 },
+    display = { shown = true, point = "CENTER", x = 0, y = 0, collapsed = {} },
     minimap = { hide = false },
   },
   profile = {

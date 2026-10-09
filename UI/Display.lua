@@ -25,6 +25,10 @@ local WIDTH_STEP = 10
 local BORDER_R, BORDER_G, BORDER_B = 0.7, 0.6, 0.4
 local TEXT_COLOR = { 0.12, 0.1, 0.08 }
 local MUTED_COLOR = { 0.45, 0.4, 0.33 }
+local HEADER_HEIGHT = 18
+-- les polices du jeu n'ont pas de glyphes ▸/▾ : icônes plus/moins natives en ligne
+local ICON_COLLAPSED = "|TInterface\\Buttons\\UI-PlusButton-Up:14:14|t"
+local ICON_EXPANDED = "|TInterface\\Buttons\\UI-MinusButton-Up:14:14|t"
 
 local FREQ_ORDER = { "daily", "weekly", "monthly" }
 local FREQ_TITLES = {
@@ -82,15 +86,31 @@ local function acquireRow(index)
   return row
 end
 
+local function isCollapsed(frequency)
+  return db.char.display.collapsed[frequency] == true
+end
+
 local function acquireHeader(index)
   frame.headers = frame.headers or {}
   local header = frame.headers[index]
   if not header then
-    header = frame.content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    header:SetShadowColor(0, 0, 0, 0)
-    header:SetShadowOffset(0, 0)
-    header:SetJustifyH("LEFT")
-    header:SetWordWrap(false)
+    header = CreateFrame("Button", nil, frame.content)
+    header:SetHeight(HEADER_HEIGHT)
+    header.text = header:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    header.text:SetAllPoints()
+    header.text:SetShadowColor(0, 0, 0, 0)
+    header.text:SetShadowOffset(0, 0)
+    header.text:SetJustifyH("LEFT")
+    header.text:SetWordWrap(false)
+    header:RegisterForClicks("LeftButtonUp")
+    header:SetScript("OnClick", function(self)
+      db.char.display.collapsed[self.frequency] = not isCollapsed(self.frequency) or nil
+      Display.Refresh()
+    end)
+    -- le bouton capte la souris : on relaie le glisser au cadre pour qu'il reste déplaçable
+    header:RegisterForDrag("LeftButton")
+    header:SetScript("OnDragStart", function() frame:GetScript("OnDragStart")(frame) end)
+    header:SetScript("OnDragStop", function() frame:GetScript("OnDragStop")(frame) end)
     frame.headers[index] = header
   end
   header:Show()
@@ -199,16 +219,21 @@ function Display.Refresh()
       headerIndex = headerIndex + 1
       local header = acquireHeader(headerIndex)
       local nextReset = Reset.GetNextReset(freq, now, offset, wday)
+      local collapsed = isCollapsed(freq)
+      local done, total = Tasks.Progress(freq)
+      header.frequency = freq
       header:ClearAllPoints()
       header:SetPoint("TOPLEFT", frame.content, "TOPLEFT", 0, y)
       -- titre en brun très foncé (lisible sur parchemin clair), compteur en gris foncé
-      header:SetTextColor(0.2, 0.1, 0.02)
-      header:SetText(("%s  |cff4d4439(%s)|r"):format(
-        FREQ_TITLES[freq], formatCountdown(nextReset - now)))
-      maxRight = math.max(maxRight, header:GetStringWidth())
+      header.text:SetTextColor(0.2, 0.1, 0.02)
+      header.text:SetText(("%s %s  |cff4d4439(%s)|r"):format(
+        collapsed and ICON_COLLAPSED or ICON_EXPANDED,
+        L.SECTION_PROGRESS:format(FREQ_TITLES[freq], done, total),
+        formatCountdown(nextReset - now)))
+      maxRight = math.max(maxRight, header.text:GetStringWidth())
       y = y - 20
 
-      for _, task in ipairs(list) do
+      for _, task in ipairs(collapsed and {} or list) do
         rowIndex = rowIndex + 1
         local row = acquireRow(rowIndex)
         row:ClearAllPoints()

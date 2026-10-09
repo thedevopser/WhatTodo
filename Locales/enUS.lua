@@ -91,6 +91,9 @@ L.TPL_S2_TREATISE       = "Profession treatise"
 L.TPL_S2_CRAFT_ORDERS   = "Crafting orders"
 L.TPL_S2_TRADING_POST   = "Trading Post / Traveler's Log"
 
+-- Titre de section : libellé, tâches faites, total
+L.SECTION_PROGRESS  = "%s %d/%d"
+
 -- Compteurs de reset
 L.RESET_IN_DAYS     = "reset in %dd %dh"
 L.RESET_IN_HOURS    = "reset in %dh %02dmin"

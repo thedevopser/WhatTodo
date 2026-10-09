@@ -94,6 +94,9 @@ L.TPL_S2_TREATISE       = "Traité de métier"
 L.TPL_S2_CRAFT_ORDERS   = "Commandes de craft"
 L.TPL_S2_TRADING_POST   = "Comptoir d'échange / Journal du voyageur"
 
+-- Titre de section : libellé, tâches faites, total
+L.SECTION_PROGRESS  = "%s %d/%d"
+
 -- Compteurs de reset
 L.RESET_IN_DAYS     = "reset dans %dj %dh"
 L.RESET_IN_HOURS    = "reset dans %dh %02dmin"
