@@ -19,6 +19,7 @@ local dbDefaults = {
     nextId = 1,
     dbVersion = 0,
     lastSeenVersion = nil,
+    display = CopyTable(WhatTodo.DisplaySettings.DEFAULTS),
   },
 }
 
@@ -36,6 +37,7 @@ function addon:OnInitialize()
   WhatTodo.Tasks.Init(self.db)
   WhatTodo.AdminPanel.Setup()
   WhatTodo.Minimap.Setup(self.db)
+  WhatTodo.Options.Setup(self.db)
   self:RegisterChatCommand("wt", "HandleSlash")
   self:RegisterChatCommand("whattodo", "HandleSlash")
 end
@@ -56,6 +58,8 @@ function addon:HandleSlash(input)
   input = strtrim(input or ""):lower()
   if input == "config" then
     WhatTodo.AdminPanel.Open()
+  elseif input == "options" then
+    WhatTodo.Options.Open()
   else
     WhatTodo.Display.Toggle()
   end

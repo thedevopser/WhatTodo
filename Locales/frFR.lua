@@ -103,6 +103,14 @@ L.TOOLTIP_COUNT     = "%s : %d"
 L.TOOLTIP_LEFT      = "Clic gauche : afficher/masquer"
 L.TOOLTIP_RIGHT     = "Clic droit : configurer"
 
+-- Options (Échap > Options > AddOns)
+L.OPT_LOCKED        = "Verrouiller la position de la fenêtre"
+L.OPT_LOCKED_DESC   = "Empêche de déplacer la fenêtre de liste."
+L.OPT_SCALE         = "Échelle"
+L.OPT_SCALE_DESC    = "Taille de la fenêtre de liste."
+L.OPT_BACKGROUND_ALPHA = "Opacité du fond"
+L.OPT_BACKGROUND_ALPHA_DESC = "Opacité du fond et du bord de la fenêtre de liste. Le texte reste entièrement opaque."
+
 -- Popup de nouveautés
 L.CHANGELOG_TITLE   = "WhatTodo — Nouveautés (1.5.2)"
 L.CHANGELOG_BODY    = "Fini les noms de tâches coupés. La fenêtre de liste s'adapte maintenant à la longueur du libellé le plus long, jusqu'à 40 % de la largeur de l'écran, et se resserre quand la liste raccourcit.\n\nSi un libellé dépasse encore cette limite, il se termine par « … » et le texte complet s'affiche en infobulle au survol de la ligne."

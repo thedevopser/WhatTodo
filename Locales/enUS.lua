@@ -100,6 +100,14 @@ L.TOOLTIP_COUNT     = "%s: %d"
 L.TOOLTIP_LEFT      = "Left click: show/hide"
 L.TOOLTIP_RIGHT     = "Right click: configure"
 
+-- Options (Échap > Options > AddOns)
+L.OPT_LOCKED        = "Lock window position"
+L.OPT_LOCKED_DESC   = "Prevents the list window from being dragged."
+L.OPT_SCALE         = "Scale"
+L.OPT_SCALE_DESC    = "Size of the list window."
+L.OPT_BACKGROUND_ALPHA = "Background opacity"
+L.OPT_BACKGROUND_ALPHA_DESC = "Opacity of the list window background and border. Text stays fully opaque."
+
 -- Popup de nouveautés
 L.CHANGELOG_TITLE   = "WhatTodo — What's new (1.5.2)"
 L.CHANGELOG_BODY    = "No more clipped task names. The list window now sizes itself to the longest label, up to 40% of the screen width, and shrinks back when your list gets shorter.\n\nIf a label is still too long for that cap, it ends with an ellipsis and the full text shows up in a tooltip when you hover the row."

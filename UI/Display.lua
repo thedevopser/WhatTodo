@@ -3,6 +3,7 @@ local Display = {}
 WhatTodo.Display = Display
 local Tasks = WhatTodo.Tasks
 local Reset = WhatTodo.Reset
+local DisplaySettings = WhatTodo.DisplaySettings
 local L = WhatTodo_L
 
 -- écart entre hauteur du cadre et hauteur du viewport (marge haute 36 + marge basse 12)
@@ -21,6 +22,7 @@ local ROW_INSET = 4
 local TEXT_GAP = 4
 -- arrondi de la largeur : évite que le cadre respire quand le compteur change de longueur
 local WIDTH_STEP = 10
+local BORDER_R, BORDER_G, BORDER_B = 0.7, 0.6, 0.4
 
 local FREQ_ORDER = { "daily", "weekly", "monthly" }
 local FREQ_TITLES = {
@@ -97,7 +99,9 @@ function Display.Build(database)
   frame:SetMovable(true)
   frame:EnableMouse(true)
   frame:RegisterForDrag("LeftButton")
-  frame:SetScript("OnDragStart", frame.StartMoving)
+  frame:SetScript("OnDragStart", function(self)
+    if not self.locked then self:StartMoving() end
+  end)
   frame:SetScript("OnDragStop", function(self)
     self:StopMovingOrSizing()
     local point, _, _, x, y = self:GetPoint()
@@ -110,13 +114,14 @@ function Display.Build(database)
   local bg = frame:CreateTexture(nil, "BACKGROUND")
   bg:SetAllPoints()
   bg:SetTexture("Interface\\AchievementFrame\\UI-GuildAchievement-Parchment-Horizontal")
+  frame.bg = bg
 
   frame:SetBackdrop({
     edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
     edgeSize = 16,
     insets = { left = 4, right = 4, top = 4, bottom = 4 },
   })
-  frame:SetBackdropBorderColor(0.7, 0.6, 0.4)
+  frame:SetBackdropBorderColor(BORDER_R, BORDER_G, BORDER_B)
 
   local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
   title:SetPoint("TOP", 0, -10)
@@ -145,7 +150,17 @@ function Display.Build(database)
   frame.content = content
   frame.rows = {}
 
+  Display.ApplySettings()
   Display.Refresh()
+end
+
+function Display.ApplySettings()
+  if not frame then return end
+  local settings = DisplaySettings.Normalize(db.global.display)
+  frame.locked = settings.locked
+  frame:SetScale(settings.scale)
+  frame.bg:SetAlpha(settings.backgroundAlpha)
+  frame:SetBackdropBorderColor(BORDER_R, BORDER_G, BORDER_B, settings.backgroundAlpha)
 end
 
 function Display.Refresh()

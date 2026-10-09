@@ -1,0 +1,69 @@
+dofile("tests/mock_wow_api.lua")
+loadfile("Core/DisplaySettings.lua")("WhatTodo", _G.WhatTodo)
+
+local DisplaySettings = _G.WhatTodo.DisplaySettings
+
+describe("DisplaySettings.Normalize — valeurs valides", function()
+    it("conserve des réglages déjà valides", function()
+        local out = DisplaySettings.Normalize({ scale = 1.5, backgroundAlpha = 0.4, locked = true })
+        assert.equals(1.5, out.scale)
+        assert.equals(0.4, out.backgroundAlpha)
+        assert.is_true(out.locked)
+    end)
+
+    it("les valeurs par défaut sont elles-mêmes valides", function()
+        local out = DisplaySettings.Normalize(DisplaySettings.DEFAULTS)
+        assert.equals(DisplaySettings.DEFAULTS.scale, out.scale)
+        assert.equals(DisplaySettings.DEFAULTS.backgroundAlpha, out.backgroundAlpha)
+        assert.equals(DisplaySettings.DEFAULTS.locked, out.locked)
+    end)
+
+    it("renvoie une nouvelle table sans modifier l'entrée", function()
+        local raw = { scale = 99, backgroundAlpha = 0.5, locked = false }
+        local out = DisplaySettings.Normalize(raw)
+        assert.are_not.equal(raw, out)
+        assert.equals(99, raw.scale)
+    end)
+end)
+
+describe("DisplaySettings.Normalize — échelle", function()
+    it("borne une échelle trop grande au maximum", function()
+        assert.equals(DisplaySettings.SCALE_MAX, DisplaySettings.Normalize({ scale = 10 }).scale)
+    end)
+
+    it("borne une échelle trop petite au minimum", function()
+        assert.equals(DisplaySettings.SCALE_MIN, DisplaySettings.Normalize({ scale = 0.1 }).scale)
+    end)
+
+    it("remplace une échelle absente, non numérique ou NaN par la valeur par défaut", function()
+        assert.equals(1, DisplaySettings.Normalize({}).scale)
+        assert.equals(1, DisplaySettings.Normalize({ scale = "big" }).scale)
+        assert.equals(1, DisplaySettings.Normalize({ scale = 0 / 0 }).scale)
+    end)
+end)
+
+describe("DisplaySettings.Normalize — opacité du fond", function()
+    it("borne l'opacité entre 0 et 1", function()
+        assert.equals(0, DisplaySettings.Normalize({ backgroundAlpha = -1 }).backgroundAlpha)
+        assert.equals(1, DisplaySettings.Normalize({ backgroundAlpha = 3 }).backgroundAlpha)
+    end)
+
+    it("remplace une opacité non numérique par la valeur par défaut", function()
+        assert.equals(1, DisplaySettings.Normalize({ backgroundAlpha = true }).backgroundAlpha)
+    end)
+end)
+
+describe("DisplaySettings.Normalize — verrou", function()
+    it("ne considère comme verrouillé que le booléen true", function()
+        assert.is_false(DisplaySettings.Normalize({ locked = "yes" }).locked)
+        assert.is_false(DisplaySettings.Normalize({ locked = 1 }).locked)
+        assert.is_false(DisplaySettings.Normalize({}).locked)
+    end)
+end)
+
+describe("DisplaySettings.Normalize — entrée invalide", function()
+    it("lève une erreur si les réglages ne sont pas une table", function()
+        assert.has_error(function() DisplaySettings.Normalize(nil) end)
+        assert.has_error(function() DisplaySettings.Normalize("scale=1") end)
+    end)
+end)
