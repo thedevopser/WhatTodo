@@ -86,12 +86,47 @@ function Tasks.Remove(id)
   if i then table.remove(store.tasks, i) end
 end
 
+local function lastOrder(frequency)
+  local last = 0
+  for _, task in ipairs(Tasks.GetByFrequency(frequency)) do
+    last = math.max(last, task.order or 0)
+  end
+  return last
+end
+
 function Tasks.Update(id, fields)
   local _, task = indexOf(id)
   if not task then return end
+  if fields.frequency and fields.frequency ~= task.frequency then
+    task.order = lastOrder(fields.frequency) + 1
+  end
   for k, v in pairs(fields) do
     task[k] = v
   end
+end
+
+local MOVE_STEP = { up = -1, down = 1 }
+
+-- renumérote 1..n dans l'ordre affiché avant d'échanger : supprime les ex-aequo
+-- entre tâches perso et compte, qui ont chacune leur propre compteur d'ordre
+function Tasks.Move(id, direction)
+  local step = MOVE_STEP[direction]
+  if not step then
+    error("Tasks.Move: invalid direction " .. tostring(direction), 2)
+  end
+  local _, task = indexOf(id)
+  if not task then
+    error("Tasks.Move: unknown task id " .. tostring(id), 2)
+  end
+  local list = Tasks.GetByFrequency(task.frequency)
+  local position
+  for i, other in ipairs(list) do
+    other.order = i
+    if other.id == id then position = i end
+  end
+  local neighbour = list[position + step]
+  if not neighbour then return end
+  task.order, neighbour.order = neighbour.order, task.order
 end
 
 function Tasks.SetCompleted(id, done)

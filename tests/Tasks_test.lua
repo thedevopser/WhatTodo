@@ -151,3 +151,81 @@ describe("Tasks.Progress — avancement d'une fréquence", function()
         assert.equals(0, total)
     end)
 end)
+
+describe("Tasks.Move — réordonnancement au sein d'une fréquence", function()
+    local function dailyLabels()
+        local out = {}
+        for i, task in ipairs(Tasks.GetByFrequency("daily")) do out[i] = task.label end
+        return out
+    end
+
+    local function setup()
+        Tasks.Init(freshDb())
+        local ids = {
+            Tasks.Add("first", "daily"),
+            Tasks.Add("second", "daily"),
+            Tasks.Add("third", "daily"),
+        }
+        return ids
+    end
+
+    it("monte une tâche d'un cran", function()
+        local ids = setup()
+        Tasks.Move(ids[3], "up")
+        assert.same({ "first", "third", "second" }, dailyLabels())
+    end)
+
+    it("descend une tâche d'un cran", function()
+        local ids = setup()
+        Tasks.Move(ids[1], "down")
+        assert.same({ "second", "first", "third" }, dailyLabels())
+    end)
+
+    it("ne fait rien en tête ou en fin de liste", function()
+        local ids = setup()
+        Tasks.Move(ids[1], "up")
+        Tasks.Move(ids[3], "down")
+        assert.same({ "first", "second", "third" }, dailyLabels())
+    end)
+
+    it("ordonne ensemble tâches perso et compte, même à ordre égal au départ", function()
+        Tasks.Init(freshDb())
+        Tasks.Add("char", "daily", "char")
+        local accountId = Tasks.Add("account", "daily", "account")
+        local before = dailyLabels()
+        Tasks.Move(accountId, before[1] == "account" and "down" or "up")
+        assert.same({ before[2], before[1] }, dailyLabels())
+        local list = Tasks.GetByFrequency("daily")
+        assert.are_not.equal(list[1].order, list[2].order)
+    end)
+
+    it("n'affecte pas les autres fréquences", function()
+        local ids = setup()
+        Tasks.Add("weekly", "weekly")
+        Tasks.Move(ids[2], "up")
+        assert.equals("weekly", Tasks.GetByFrequency("weekly")[1].label)
+    end)
+
+    it("lève une erreur sur un id inconnu", function()
+        setup()
+        assert.has_error(function() Tasks.Move("t999", "up") end)
+    end)
+
+    it("lève une erreur sur une direction invalide", function()
+        local ids = setup()
+        assert.has_error(function() Tasks.Move(ids[1], "left") end)
+    end)
+end)
+
+describe("Tasks.Update — changement de fréquence", function()
+    it("place la tâche en fin de sa nouvelle fréquence", function()
+        Tasks.Init(freshDb())
+        local id = Tasks.Add("moved", "daily")
+        Tasks.Add("weekly one", "weekly")
+        Tasks.Add("weekly two", "weekly")
+        Tasks.Update(id, { frequency = "weekly" })
+        local weekly = Tasks.GetByFrequency("weekly")
+        assert.equals(3, #weekly)
+        assert.equals("moved", weekly[3].label)
+    end)
+end)
