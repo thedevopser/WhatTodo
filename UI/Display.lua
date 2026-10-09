@@ -39,6 +39,7 @@ local FREQ_TITLES = {
 
 local frame
 local db
+local inCombat = false
 
 local function formatCountdown(seconds)
   if seconds < 0 then seconds = 0 end
@@ -121,6 +122,8 @@ function Display.Build(database)
   db = database
   if frame then return end
 
+  -- un /reload en plein combat ne déclenche pas PLAYER_REGEN_DISABLED
+  inCombat = InCombatLockdown()
   frame = CreateFrame("Frame", "WhatTodoFrame", UIParent, "BackdropTemplate")
   frame:SetSize(280, 360)
   frame:SetPoint(db.char.display.point, UIParent, db.char.display.point,
@@ -190,6 +193,25 @@ function Display.ApplySettings()
   frame:SetScale(settings.scale)
   frame.bg:SetAlpha(settings.backgroundAlpha)
   frame:SetBackdropBorderColor(BORDER_R, BORDER_G, BORDER_B, settings.backgroundAlpha)
+  Display.UpdateVisibility()
+end
+
+-- applique la visibilité effective sans toucher à db.char.display.shown,
+-- qui reste le choix du joueur (le masquage en combat est temporaire)
+function Display.UpdateVisibility()
+  if not frame then return end
+  local hideInCombat = DisplaySettings.Normalize(db.global.display).hideInCombat
+  if DisplaySettings.IsListVisible(db.char.display.shown, inCombat, hideInCombat) then
+    frame:Show()
+    Display.Refresh()
+  else
+    frame:Hide()
+  end
+end
+
+function Display.SetInCombat(value)
+  inCombat = value
+  Display.UpdateVisibility()
 end
 
 function Display.Refresh()
@@ -300,22 +322,18 @@ function Display.Refresh()
 end
 
 function Display.Show()
-  if frame then
-    frame:Show()
-    db.char.display.shown = true
-    Display.Refresh()
-  end
+  db.char.display.shown = true
+  Display.UpdateVisibility()
 end
 
 function Display.Hide()
-  if frame then
-    frame:Hide()
-    db.char.display.shown = false
-  end
+  db.char.display.shown = false
+  Display.UpdateVisibility()
 end
 
+-- bascule le choix du joueur ; en combat avec masquage actif, il s'applique à la sortie
 function Display.Toggle()
-  if frame and frame:IsShown() then
+  if db.char.display.shown then
     Display.Hide()
   else
     Display.Show()

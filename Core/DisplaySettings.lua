@@ -46,5 +46,10 @@ function DisplaySettings.Normalize(raw)
       defaults.backgroundAlpha),
     locked = raw.locked == true,
     completedStyle = isCompletedStyle(raw.completedStyle) and raw.completedStyle or defaults.completedStyle,
+    hideInCombat = raw.hideInCombat == true,
   }
+end
+
+function DisplaySettings.IsListVisible(shown, inCombat, hideInCombat)
+  return shown and not (inCombat and hideInCombat)
 end

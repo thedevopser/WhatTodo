@@ -115,6 +115,8 @@ L.OPT_COMPLETED_STYLE_DESC = "How tasks already done for the current period appe
 L.OPT_COMPLETED_SHOW = "Show normally"
 L.OPT_COMPLETED_DIM = "Grey out and strike through"
 L.OPT_COMPLETED_HIDE = "Hide"
+L.OPT_HIDE_IN_COMBAT = "Hide in combat"
+L.OPT_HIDE_IN_COMBAT_DESC = "Hides the list while you are in combat and brings it back afterwards."
 
 -- Popup de nouveautés
 L.CHANGELOG_TITLE   = "WhatTodo — What's new (1.5.2)"

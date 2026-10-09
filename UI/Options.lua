@@ -72,6 +72,15 @@ local function buildOptionsTable()
         get = function() return DisplaySettings.Normalize(settings()).backgroundAlpha end,
         set = function(_, value) setAndApply("backgroundAlpha", value) end,
       },
+      hideInCombat = {
+        order = 4,
+        type = "toggle",
+        name = L.OPT_HIDE_IN_COMBAT,
+        desc = L.OPT_HIDE_IN_COMBAT_DESC,
+        width = "full",
+        get = function() return DisplaySettings.Normalize(settings()).hideInCombat end,
+        set = function(_, value) setAndApply("hideInCombat", value) end,
+      },
     },
   }
 end

@@ -46,12 +46,9 @@ function addon:OnEnable()
   WhatTodo.Display.Build(self.db)
   WhatTodo.ChangelogPopup.Initialize(self.db)
   self:RegisterEvent("PLAYER_ENTERING_WORLD", function() WhatTodo.Display.Refresh() end)
+  self:RegisterEvent("PLAYER_REGEN_DISABLED", function() WhatTodo.Display.SetInCombat(true) end)
+  self:RegisterEvent("PLAYER_REGEN_ENABLED", function() WhatTodo.Display.SetInCombat(false) end)
   self.ticker = C_Timer.NewTicker(60, function() WhatTodo.Display.Refresh() end)
-  if self.db.char.display.shown then
-    WhatTodo.Display.Show()
-  else
-    WhatTodo.Display.Hide()
-  end
 end
 
 function addon:HandleSlash(input)
