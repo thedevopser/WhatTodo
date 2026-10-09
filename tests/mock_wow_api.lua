@@ -6,3 +6,9 @@ _G.date       = os.date
 _G.strtrim    = function(s) return (s or ""):gsub("^%s+", ""):gsub("%s+$", "") end
 _G.GetServerTime = function() return os.time() end
 _G.GetCurrentRegion = function() return 3 end
+_G.C_DateAndTime = {
+    GetCurrentCalendarTime = function()
+        local t = os.date("!*t", os.time())
+        return { hour = t.hour, minute = t.min }
+    end,
+}

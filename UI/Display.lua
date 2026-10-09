@@ -23,6 +23,8 @@ local TEXT_GAP = 4
 -- arrondi de la largeur : évite que le cadre respire quand le compteur change de longueur
 local WIDTH_STEP = 10
 local BORDER_R, BORDER_G, BORDER_B = 0.7, 0.6, 0.4
+local TEXT_COLOR = { 0.12, 0.1, 0.08 }
+local MUTED_COLOR = { 0.45, 0.4, 0.33 }
 
 local FREQ_ORDER = { "daily", "weekly", "monthly" }
 local FREQ_TITLES = {
@@ -51,7 +53,6 @@ local function acquireRow(index)
     row = CreateFrame("CheckButton", nil, frame.content, "UICheckButtonTemplate")
     row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     row.text:SetPoint("LEFT", row, "RIGHT", TEXT_GAP, 0)
-    row.text:SetTextColor(0.12, 0.1, 0.08)
     -- ombre coupée : sur texte sombre elle rend le rendu flou
     row.text:SetShadowColor(0, 0, 0, 0)
     row.text:SetShadowOffset(0, 0)
@@ -67,6 +68,14 @@ local function acquireRow(index)
       end
     end)
     row:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    row:SetScript("OnClick", function(self)
+      Tasks.SetCompleted(self.taskId, self:GetChecked())
+      Display.Refresh()
+    end)
+    -- les FontString ne gèrent pas le barré : trait de 1 px posé sur le texte
+    row.strike = row:CreateTexture(nil, "OVERLAY")
+    row.strike:SetHeight(1)
+    row.strike:SetPoint("LEFT", row.text, "LEFT", 0, 0)
     frame.rows[index] = row
   end
   row:Show()
@@ -164,10 +173,12 @@ function Display.ApplySettings()
 end
 
 function Display.Refresh()
-  if not frame then return end
+  -- masquée : rien à recalculer, Show() rafraîchit à l'affichage
+  if not frame or not frame:IsShown() then return end
   local now = GetServerTime()
   local offset = Reset.GetServerOffset()
   local wday = Reset.GetWeeklyResetWeekday(Reset.GetCurrentRegion())
+  local completedStyle = DisplaySettings.Normalize(db.global.display).completedStyle
 
   for _, row in ipairs(frame.rows) do row:Hide() end
   if frame.headers then
@@ -181,8 +192,10 @@ function Display.Refresh()
   local maxRight = 0
 
   for _, freq in ipairs(FREQ_ORDER) do
-    local list = Tasks.GetByFrequency(freq)
-    if #list > 0 then
+    local all = Tasks.GetByFrequency(freq)
+    local list = Tasks.VisibleForDisplay(all, completedStyle)
+    -- en mode masqué, une section entièrement faite garde son en-tête
+    if #all > 0 then
       headerIndex = headerIndex + 1
       local header = acquireHeader(headerIndex)
       local nextReset = Reset.GetNextReset(freq, now, offset, wday)
@@ -210,11 +223,11 @@ function Display.Refresh()
         end
         maxRight = math.max(maxRight,
           ROW_INSET + row:GetWidth() + TEXT_GAP + row.text:GetStringWidth())
-        row:SetChecked(Tasks.IsDone(task))
+        local done = Tasks.IsDone(task)
+        row:SetChecked(done)
         row.taskId = task.id
-        row:SetScript("OnClick", function(self)
-          Tasks.SetCompleted(self.taskId, self:GetChecked())
-        end)
+        row.dimmed = done and completedStyle == "dim"
+        row.text:SetTextColor(unpack(row.dimmed and MUTED_COLOR or TEXT_COLOR))
         y = y - 24
       end
       y = y - 6
@@ -238,6 +251,13 @@ function Display.Refresh()
   for i = 1, rowIndex do
     local row = frame.rows[i]
     row.text:SetWidth(contentWidth - ROW_INSET - row:GetWidth() - TEXT_GAP)
+    if row.dimmed then
+      row.strike:SetColorTexture(unpack(MUTED_COLOR))
+      row.strike:SetWidth(math.min(row.text:GetStringWidth(), row.text:GetWidth()))
+      row.strike:Show()
+    else
+      row.strike:Hide()
+    end
   end
   for i = 1, headerIndex do
     frame.headers[i]:SetWidth(contentWidth)

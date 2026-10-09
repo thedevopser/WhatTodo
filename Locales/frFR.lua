@@ -110,6 +110,11 @@ L.OPT_SCALE         = "Échelle"
 L.OPT_SCALE_DESC    = "Taille de la fenêtre de liste."
 L.OPT_BACKGROUND_ALPHA = "Opacité du fond"
 L.OPT_BACKGROUND_ALPHA_DESC = "Opacité du fond et du bord de la fenêtre de liste. Le texte reste entièrement opaque."
+L.OPT_COMPLETED_STYLE = "Tâches faites"
+L.OPT_COMPLETED_STYLE_DESC = "Apparence dans la liste des tâches déjà faites pour la période en cours."
+L.OPT_COMPLETED_SHOW = "Afficher normalement"
+L.OPT_COMPLETED_DIM = "Griser et barrer"
+L.OPT_COMPLETED_HIDE = "Masquer"
 
 -- Popup de nouveautés
 L.CHANGELOG_TITLE   = "WhatTodo — Nouveautés (1.5.2)"

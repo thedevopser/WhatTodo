@@ -2,6 +2,7 @@ local ADDON_NAME, WhatTodo = ...
 local Tasks = {}
 WhatTodo.Tasks = Tasks
 local Reset = WhatTodo.Reset
+local DisplaySettings = WhatTodo.DisplaySettings
 
 local db
 
@@ -109,4 +110,17 @@ function Tasks.RemainingCount(frequency)
     if not Tasks.IsDone(task) then count = count + 1 end
   end
   return count
+end
+
+function Tasks.VisibleForDisplay(list, completedStyle)
+  if not DisplaySettings.IsCompletedStyle(completedStyle) then
+    error("Tasks.VisibleForDisplay: unknown completed style " .. tostring(completedStyle), 2)
+  end
+  local out = {}
+  for _, task in ipairs(list) do
+    if completedStyle ~= "hide" or not Tasks.IsDone(task) then
+      out[#out + 1] = task
+    end
+  end
+  return out
 end

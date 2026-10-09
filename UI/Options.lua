@@ -17,6 +17,7 @@ end
 local function setAndApply(key, value)
   settings()[key] = value
   WhatTodo.Display.ApplySettings()
+  WhatTodo.Display.Refresh()
 end
 
 local function buildOptionsTable()
@@ -24,6 +25,20 @@ local function buildOptionsTable()
     type = "group",
     name = APP_NAME,
     args = {
+      completedStyle = {
+        order = 0,
+        type = "select",
+        name = L.OPT_COMPLETED_STYLE,
+        desc = L.OPT_COMPLETED_STYLE_DESC,
+        values = {
+          show = L.OPT_COMPLETED_SHOW,
+          dim = L.OPT_COMPLETED_DIM,
+          hide = L.OPT_COMPLETED_HIDE,
+        },
+        sorting = DisplaySettings.COMPLETED_STYLES,
+        get = function() return DisplaySettings.Normalize(settings()).completedStyle end,
+        set = function(_, value) setAndApply("completedStyle", value) end,
+      },
       locked = {
         order = 1,
         type = "toggle",

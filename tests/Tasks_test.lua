@@ -1,5 +1,6 @@
 dofile("tests/mock_wow_api.lua")
 loadfile("Core/Reset.lua")("WhatTodo", _G.WhatTodo)
+loadfile("Core/DisplaySettings.lua")("WhatTodo", _G.WhatTodo)
 loadfile("Core/Tasks.lua")("WhatTodo", _G.WhatTodo)
 
 local Tasks = _G.WhatTodo.Tasks
@@ -85,5 +86,44 @@ describe("Tasks.Update/Remove/SetCompleted — localisation par préfixe d'id", 
         assert.is_not_nil(db.global.tasks[1].lastCompleted)
         Tasks.SetCompleted(id, false)
         assert.is_nil(db.global.tasks[1].lastCompleted)
+    end)
+end)
+
+describe("Tasks.VisibleForDisplay — filtrage selon le rendu des tâches faites", function()
+    local function setup()
+        local db = freshDb()
+        Tasks.Init(db)
+        local doneId = Tasks.Add("done", "daily")
+        Tasks.Add("todo", "daily")
+        Tasks.SetCompleted(doneId, true)
+        return Tasks.GetByFrequency("daily")
+    end
+
+    local function labels(list)
+        local out = {}
+        for i, task in ipairs(list) do out[i] = task.label end
+        return out
+    end
+
+    it("garde toutes les tâches en mode show et dim", function()
+        local list = setup()
+        assert.same({ "done", "todo" }, labels(Tasks.VisibleForDisplay(list, "show")))
+        assert.same({ "done", "todo" }, labels(Tasks.VisibleForDisplay(list, "dim")))
+    end)
+
+    it("retire les tâches faites en mode hide", function()
+        assert.same({ "todo" }, labels(Tasks.VisibleForDisplay(setup(), "hide")))
+    end)
+
+    it("renvoie une nouvelle liste sans modifier celle reçue", function()
+        local list = setup()
+        local out = Tasks.VisibleForDisplay(list, "hide")
+        assert.are_not.equal(list, out)
+        assert.equals(2, #list)
+    end)
+
+    it("lève une erreur sur un style inconnu", function()
+        local list = setup()
+        assert.has_error(function() Tasks.VisibleForDisplay(list, "blink") end)
     end)
 end)

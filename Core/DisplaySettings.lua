@@ -7,6 +7,8 @@ DisplaySettings.SCALE_MAX = 2
 DisplaySettings.ALPHA_MIN = 0
 DisplaySettings.ALPHA_MAX = 1
 
+DisplaySettings.COMPLETED_STYLES = { "show", "dim", "hide" }
+
 -- Schéma complet des réglages compte (db.global.display) ; les champs pas encore
 -- exposés dans les options sont figés ici pour éviter une migration plus tard.
 DisplaySettings.DEFAULTS = {
@@ -17,6 +19,15 @@ DisplaySettings.DEFAULTS = {
   completedStyle = "dim",
   hideInCombat = false,
 }
+
+local function isCompletedStyle(value)
+  for _, style in ipairs(DisplaySettings.COMPLETED_STYLES) do
+    if style == value then return true end
+  end
+  return false
+end
+
+DisplaySettings.IsCompletedStyle = isCompletedStyle
 
 local function clampNumber(value, min, max, fallback)
   -- value ~= value : NaN
@@ -34,5 +45,6 @@ function DisplaySettings.Normalize(raw)
     backgroundAlpha = clampNumber(raw.backgroundAlpha, DisplaySettings.ALPHA_MIN, DisplaySettings.ALPHA_MAX,
       defaults.backgroundAlpha),
     locked = raw.locked == true,
+    completedStyle = isCompletedStyle(raw.completedStyle) and raw.completedStyle or defaults.completedStyle,
   }
 end

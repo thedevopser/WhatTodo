@@ -107,6 +107,11 @@ L.OPT_SCALE         = "Scale"
 L.OPT_SCALE_DESC    = "Size of the list window."
 L.OPT_BACKGROUND_ALPHA = "Background opacity"
 L.OPT_BACKGROUND_ALPHA_DESC = "Opacity of the list window background and border. Text stays fully opaque."
+L.OPT_COMPLETED_STYLE = "Completed tasks"
+L.OPT_COMPLETED_STYLE_DESC = "How tasks already done for the current period appear in the list."
+L.OPT_COMPLETED_SHOW = "Show normally"
+L.OPT_COMPLETED_DIM = "Grey out and strike through"
+L.OPT_COMPLETED_HIDE = "Hide"
 
 -- Popup de nouveautés
 L.CHANGELOG_TITLE   = "WhatTodo — What's new (1.5.2)"

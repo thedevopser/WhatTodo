@@ -1,6 +1,7 @@
 dofile("tests/mock_wow_api.lua")
 dofile("Locales/enUS.lua") -- pose le global WhatTodo_L attendu par SeasonTemplates
 loadfile("Core/Reset.lua")("WhatTodo", _G.WhatTodo)
+loadfile("Core/DisplaySettings.lua")("WhatTodo", _G.WhatTodo)
 loadfile("Core/Tasks.lua")("WhatTodo", _G.WhatTodo)
 loadfile("Core/SeasonTemplates.lua")("WhatTodo", _G.WhatTodo)
 
