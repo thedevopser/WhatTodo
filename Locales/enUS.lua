@@ -126,6 +126,6 @@ L.THEME_BLIZZARD    = "Blizzard"
 L.THEME_TRANSPARENT = "Transparent"
 
 -- Popup de nouveautés
-L.CHANGELOG_TITLE   = "WhatTodo — What's new (1.5.2)"
-L.CHANGELOG_BODY    = "No more clipped task names. The list window now sizes itself to the longest label, up to 40% of the screen width, and shrinks back when your list gets shorter.\n\nIf a label is still too long for that cap, it ends with an ellipsis and the full text shows up in a tooltip when you hover the row."
+L.CHANGELOG_TITLE   = "WhatTodo — What's new (1.6.0)"
+L.CHANGELOG_BODY    = "The list is now yours to shape. Open the settings with /wt options (or Esc > Options > AddOns) to pick one of five themes, grey out or hide completed tasks, change the scale and background opacity, lock the window or hide it in combat.\n\nEach section header shows your progress (3/7) and folds away with a click. In the management panel, the arrows next to each task change its order."
 L.CHANGELOG_CLOSE   = "Got it"

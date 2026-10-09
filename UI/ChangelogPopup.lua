@@ -6,7 +6,7 @@ local L = WhatTodo_L
 
 -- Bumper à la main uniquement quand on veut annoncer les nouveautés au login.
 -- Peut rester en retard sur ## Version du .toc pour un patch technique (ex. 1.5.1).
-local CHANGELOG_VERSION = "1.5.2"
+local CHANGELOG_VERSION = "1.6.0"
 
 -- Définition enregistrée au chargement du fichier : on n'écrit qu'une nouvelle
 -- clé, sans jamais réassigner la globale StaticPopupDialogs (réassigner taint

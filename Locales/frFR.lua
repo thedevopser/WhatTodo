@@ -129,6 +129,6 @@ L.THEME_BLIZZARD    = "Blizzard"
 L.THEME_TRANSPARENT = "Transparent"
 
 -- Popup de nouveautés
-L.CHANGELOG_TITLE   = "WhatTodo — Nouveautés (1.5.2)"
-L.CHANGELOG_BODY    = "Fini les noms de tâches coupés. La fenêtre de liste s'adapte maintenant à la longueur du libellé le plus long, jusqu'à 40 % de la largeur de l'écran, et se resserre quand la liste raccourcit.\n\nSi un libellé dépasse encore cette limite, il se termine par « … » et le texte complet s'affiche en infobulle au survol de la ligne."
+L.CHANGELOG_TITLE   = "WhatTodo — Nouveautés (1.6.0)"
+L.CHANGELOG_BODY    = "La liste se règle désormais à votre goût. Ouvrez les options avec /wt options (ou Échap > Options > AddOns) pour choisir parmi cinq thèmes, griser ou masquer les tâches faites, régler l'échelle et l'opacité du fond, verrouiller la fenêtre ou la masquer en combat.\n\nChaque en-tête de section affiche votre avancement (3/7) et se replie d'un clic. Dans le panneau de gestion, les flèches à côté de chaque tâche changent son ordre."
 L.CHANGELOG_CLOSE   = "Compris"
