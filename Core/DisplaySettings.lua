@@ -1,6 +1,7 @@
 local ADDON_NAME, WhatTodo = ...
 local DisplaySettings = {}
 WhatTodo.DisplaySettings = DisplaySettings
+local Themes = WhatTodo.Themes
 
 DisplaySettings.SCALE_MIN = 0.5
 DisplaySettings.SCALE_MAX = 2
@@ -15,7 +16,7 @@ DisplaySettings.DEFAULTS = {
   scale = 1,
   backgroundAlpha = 1,
   locked = false,
-  theme = "parchment",
+  theme = Themes.DEFAULT_KEY,
   completedStyle = "dim",
   hideInCombat = false,
 }
@@ -47,6 +48,7 @@ function DisplaySettings.Normalize(raw)
     locked = raw.locked == true,
     completedStyle = isCompletedStyle(raw.completedStyle) and raw.completedStyle or defaults.completedStyle,
     hideInCombat = raw.hideInCombat == true,
+    theme = Themes.Find(raw.theme) and raw.theme or defaults.theme,
   }
 end
 

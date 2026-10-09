@@ -21,10 +21,25 @@ local function setAndApply(key, value)
 end
 
 local function buildOptionsTable()
+  local themeValues, themeOrder = {}, {}
+  for _, theme in ipairs(WhatTodo.Themes.list) do
+    themeValues[theme.key] = L[theme.labelKey]
+    themeOrder[#themeOrder + 1] = theme.key
+  end
   return {
     type = "group",
     name = APP_NAME,
     args = {
+      theme = {
+        order = -1,
+        type = "select",
+        name = L.OPT_THEME,
+        desc = L.OPT_THEME_DESC,
+        values = themeValues,
+        sorting = themeOrder,
+        get = function() return DisplaySettings.Normalize(settings()).theme end,
+        set = function(_, value) setAndApply("theme", value) end,
+      },
       completedStyle = {
         order = 0,
         type = "select",

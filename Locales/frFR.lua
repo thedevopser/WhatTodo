@@ -120,6 +120,13 @@ L.OPT_COMPLETED_DIM = "Griser et barrer"
 L.OPT_COMPLETED_HIDE = "Masquer"
 L.OPT_HIDE_IN_COMBAT = "Masquer en combat"
 L.OPT_HIDE_IN_COMBAT_DESC = "Masque la liste pendant les combats et la réaffiche ensuite."
+L.OPT_THEME         = "Thème"
+L.OPT_THEME_DESC    = "Apparence de la fenêtre de liste."
+L.THEME_PARCHMENT   = "Parchemin"
+L.THEME_PARCHMENT_DARK = "Parchemin sombre"
+L.THEME_DARK        = "Sombre minimaliste"
+L.THEME_BLIZZARD    = "Blizzard"
+L.THEME_TRANSPARENT = "Transparent"
 
 -- Popup de nouveautés
 L.CHANGELOG_TITLE   = "WhatTodo — Nouveautés (1.5.2)"

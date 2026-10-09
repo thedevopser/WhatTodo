@@ -1,5 +1,6 @@
 dofile("tests/mock_wow_api.lua")
 loadfile("Core/Reset.lua")("WhatTodo", _G.WhatTodo)
+loadfile("Core/Themes.lua")("WhatTodo", _G.WhatTodo)
 loadfile("Core/DisplaySettings.lua")("WhatTodo", _G.WhatTodo)
 loadfile("Core/Tasks.lua")("WhatTodo", _G.WhatTodo)
 

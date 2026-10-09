@@ -1,4 +1,5 @@
 dofile("tests/mock_wow_api.lua")
+loadfile("Core/Themes.lua")("WhatTodo", _G.WhatTodo)
 loadfile("Core/DisplaySettings.lua")("WhatTodo", _G.WhatTodo)
 
 local DisplaySettings = _G.WhatTodo.DisplaySettings

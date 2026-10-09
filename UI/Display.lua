@@ -4,6 +4,7 @@ WhatTodo.Display = Display
 local Tasks = WhatTodo.Tasks
 local Reset = WhatTodo.Reset
 local DisplaySettings = WhatTodo.DisplaySettings
+local Themes = WhatTodo.Themes
 local L = WhatTodo_L
 
 -- écart entre hauteur du cadre et hauteur du viewport (marge haute 36 + marge basse 12)
@@ -22,9 +23,6 @@ local ROW_INSET = 4
 local TEXT_GAP = 4
 -- arrondi de la largeur : évite que le cadre respire quand le compteur change de longueur
 local WIDTH_STEP = 10
-local BORDER_R, BORDER_G, BORDER_B = 0.7, 0.6, 0.4
-local TEXT_COLOR = { 0.12, 0.1, 0.08 }
-local MUTED_COLOR = { 0.45, 0.4, 0.33 }
 local HEADER_HEIGHT = 18
 -- les polices du jeu n'ont pas de glyphes ▸/▾ : icônes plus/moins natives en ligne
 local ICON_COLLAPSED = "|TInterface\\Buttons\\UI-PlusButton-Up:14:14|t"
@@ -40,6 +38,7 @@ local FREQ_TITLES = {
 local frame
 local db
 local inCombat = false
+local theme = Themes.Get(Themes.DEFAULT_KEY)
 
 local function formatCountdown(seconds)
   if seconds < 0 then seconds = 0 end
@@ -52,15 +51,27 @@ local function formatCountdown(seconds)
   return L.RESET_IN_HOURS:format(h, m)
 end
 
+local function colorCode(color)
+  local function byte(component) return math.floor(component * 255 + 0.5) end
+  return ("|cff%02x%02x%02x"):format(byte(color[1]), byte(color[2]), byte(color[3]))
+end
+
+local function applyShadow(fontString)
+  if theme.textShadow then
+    fontString:SetShadowColor(0, 0, 0, 1)
+    fontString:SetShadowOffset(1, -1)
+  else
+    fontString:SetShadowColor(0, 0, 0, 0)
+    fontString:SetShadowOffset(0, 0)
+  end
+end
+
 local function acquireRow(index)
   local row = frame.rows[index]
   if not row then
     row = CreateFrame("CheckButton", nil, frame.content, "UICheckButtonTemplate")
     row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     row.text:SetPoint("LEFT", row, "RIGHT", TEXT_GAP, 0)
-    -- ombre coupée : sur texte sombre elle rend le rendu flou
-    row.text:SetShadowColor(0, 0, 0, 0)
-    row.text:SetShadowOffset(0, 0)
     -- une seule ligne : au-delà de la largeur imposée, le texte est tronqué par « … »
     row.text:SetJustifyH("LEFT")
     row.text:SetWordWrap(false)
@@ -99,8 +110,6 @@ local function acquireHeader(index)
     header:SetHeight(HEADER_HEIGHT)
     header.text = header:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     header.text:SetAllPoints()
-    header.text:SetShadowColor(0, 0, 0, 0)
-    header.text:SetShadowOffset(0, 0)
     header.text:SetJustifyH("LEFT")
     header.text:SetWordWrap(false)
     header:RegisterForClicks("LeftButtonUp")
@@ -142,22 +151,13 @@ function Display.Build(database)
     db.char.display.y = y
   end)
 
-  -- fond parchemin natif
-  local bg = frame:CreateTexture(nil, "BACKGROUND")
-  bg:SetAllPoints()
-  bg:SetTexture("Interface\\AchievementFrame\\UI-GuildAchievement-Parchment-Horizontal")
-  frame.bg = bg
-
-  frame:SetBackdrop({
-    edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-    edgeSize = 16,
-    insets = { left = 4, right = 4, top = 4, bottom = 4 },
-  })
-  frame:SetBackdropBorderColor(BORDER_R, BORDER_G, BORDER_B)
+  -- fond et bord fournis par le thème (cf. ApplySettings)
+  frame.bg = frame:CreateTexture(nil, "BACKGROUND")
 
   local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
   title:SetPoint("TOP", 0, -10)
   title:SetText("WhatTodo")
+  frame.title = title
 
   local close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
   close:SetPoint("TOPRIGHT", -2, -2)
@@ -186,13 +186,46 @@ function Display.Build(database)
   Display.Refresh()
 end
 
+local function applyTheme(backgroundAlpha)
+  local border = theme.border
+  local inset = border and border.inset or 0
+  frame.bg:ClearAllPoints()
+  frame.bg:SetPoint("TOPLEFT", inset, -inset)
+  frame.bg:SetPoint("BOTTOMRIGHT", -inset, inset)
+
+  local background = theme.background
+  if background then
+    local r, g, b, a = unpack(background.color)
+    frame.bg:SetTexture(background.texture)
+    frame.bg:SetVertexColor(r, g, b, a * backgroundAlpha)
+    frame.bg:Show()
+  else
+    frame.bg:Hide()
+  end
+
+  if border then
+    frame:SetBackdrop({
+      edgeFile = border.edgeFile,
+      edgeSize = border.edgeSize,
+      insets = { left = inset, right = inset, top = inset, bottom = inset },
+    })
+    local r, g, b, a = unpack(border.color)
+    frame:SetBackdropBorderColor(r, g, b, a * backgroundAlpha)
+  else
+    frame:SetBackdrop(nil)
+  end
+
+  frame.title:SetTextColor(unpack(theme.titleColor))
+  applyShadow(frame.title)
+end
+
 function Display.ApplySettings()
   if not frame then return end
   local settings = DisplaySettings.Normalize(db.global.display)
+  theme = Themes.Get(settings.theme)
   frame.locked = settings.locked
   frame:SetScale(settings.scale)
-  frame.bg:SetAlpha(settings.backgroundAlpha)
-  frame:SetBackdropBorderColor(BORDER_R, BORDER_G, BORDER_B, settings.backgroundAlpha)
+  applyTheme(settings.backgroundAlpha)
   Display.UpdateVisibility()
 end
 
@@ -246,11 +279,12 @@ function Display.Refresh()
       header.frequency = freq
       header:ClearAllPoints()
       header:SetPoint("TOPLEFT", frame.content, "TOPLEFT", 0, y)
-      -- titre en brun très foncé (lisible sur parchemin clair), compteur en gris foncé
-      header.text:SetTextColor(0.2, 0.1, 0.02)
-      header.text:SetText(("%s %s  |cff4d4439(%s)|r"):format(
+      header.text:SetTextColor(unpack(theme.headerColor))
+      applyShadow(header.text)
+      header.text:SetText(("%s %s  %s(%s)|r"):format(
         collapsed and ICON_COLLAPSED or ICON_EXPANDED,
         L.SECTION_PROGRESS:format(FREQ_TITLES[freq], done, total),
+        colorCode(theme.countdownColor),
         formatCountdown(nextReset - now)))
       maxRight = math.max(maxRight, header.text:GetStringWidth())
       y = y - 20
@@ -262,7 +296,7 @@ function Display.Refresh()
         row:SetPoint("TOPLEFT", frame.content, "TOPLEFT", ROW_INSET, y)
         -- tâches account-wide : marqueur discret pour les distinguer des tâches perso
         if task.scope == "account" then
-          row.text:SetText(("%s  |cff4d4439(%s)|r"):format(task.label, L.SCOPE_ACCOUNT_TAG))
+          row.text:SetText(("%s  %s(%s)|r"):format(task.label, colorCode(theme.countdownColor), L.SCOPE_ACCOUNT_TAG))
           row.fullLabel = ("%s (%s)"):format(task.label, L.SCOPE_ACCOUNT_TAG)
         else
           row.text:SetText(task.label)
@@ -274,7 +308,8 @@ function Display.Refresh()
         row:SetChecked(done)
         row.taskId = task.id
         row.dimmed = done and completedStyle == "dim"
-        row.text:SetTextColor(unpack(row.dimmed and MUTED_COLOR or TEXT_COLOR))
+        row.text:SetTextColor(unpack(row.dimmed and theme.mutedColor or theme.textColor))
+        applyShadow(row.text)
         y = y - 24
       end
       y = y - 6
@@ -299,7 +334,7 @@ function Display.Refresh()
     local row = frame.rows[i]
     row.text:SetWidth(contentWidth - ROW_INSET - row:GetWidth() - TEXT_GAP)
     if row.dimmed then
-      row.strike:SetColorTexture(unpack(MUTED_COLOR))
+      row.strike:SetColorTexture(unpack(theme.mutedColor))
       row.strike:SetWidth(math.min(row.text:GetStringWidth(), row.text:GetWidth()))
       row.strike:Show()
     else
