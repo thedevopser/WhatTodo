@@ -2,6 +2,10 @@ NAME     := WhatTodo
 DEST_DIR := $(HOME)/addons/versions
 VERSION  := $(shell git describe --tags --abbrev=0 2>/dev/null)
 
+TEST_IMAGE  := whattodo-test
+DOCKER_RUN  := docker run --rm -v "$(CURDIR)":/addon $(TEST_IMAGE)
+LUA_SOURCES := WhatTodo.lua $(wildcard Core/*.lua UI/*.lua Locales/*.lua tests/*.lua)
+
 # Fichiers du code addon, listés explicitement (garde-fou check-packaging).
 # Libs/ est ajouté récursivement au zip (Ace3 ≈ 40 fichiers chargés via
 # Libs/embeds.xml, non listés un à un dans le .toc).
@@ -25,11 +29,25 @@ ADDON_FILES := \
 	Libs/embeds.xml \
 	Textures/icon.tga
 
-.PHONY: zip help
+.PHONY: zip help image syntax test check-packaging check
 
-zip:
+image:
+	docker build -q -t $(TEST_IMAGE) - < Dockerfile.test
+
+# luac 5.4 crashes when -p is given several files, hence one call per file.
+syntax: image
+	$(DOCKER_RUN) sh -c 'status=0; for source in "$$@"; do luac5.4 -p "$$source" || status=1; done; exit $$status' sh $(LUA_SOURCES)
+
+test: image
+	$(DOCKER_RUN) busted --pattern _test tests/
+
+check-packaging:
+	python3 tools/check-packaging.py $(ADDON_FILES)
+
+check: syntax test check-packaging
+
+zip: check-packaging
 	@[ -n "$(VERSION)" ] || { echo "Erreur : aucun tag git trouvé. Exemple : git tag v1.0.0"; exit 1; }
-	@python3 tools/check-packaging.py $(ADDON_FILES)
 	@mkdir -p "$(DEST_DIR)"
 	@python3 -c "\
 import os, zipfile; \
@@ -45,5 +63,9 @@ print('->', dest)"
 
 help:
 	@echo "Usage:"
-	@echo "  git tag v1.0.0   # créer un tag"
-	@echo "  make zip         # génère \$$HOME/addons/versions/$(NAME)-v1.0.0.zip"
+	@echo "  make check            # syntax, tests and packaging check, as run by the CI"
+	@echo "  make syntax           # compile every Lua source without running it"
+	@echo "  make test             # run the Busted suite"
+	@echo "  make check-packaging  # check that every file of the .toc is packaged"
+	@echo "  make image            # build the Docker image used by syntax and test"
+	@echo "  git tag v1.0.0 && make zip   # build \$$HOME/addons/versions/$(NAME)-v1.0.0.zip"

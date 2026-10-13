@@ -78,6 +78,19 @@ Les options se trouvent dans **Échap > Options > AddOns > WhatTodo**, ou s'ouvr
 | `/wt config` | Ouvre le panel de gestion |
 | `/wt options` | Ouvre les options |
 
+### Développement
+
+Les vérifications tournent dans une image Docker, il suffit donc d'avoir Docker, `make` et Python 3.
+
+| Commande | Effet |
+|----------|-------|
+| `make check` | Lance toutes les vérifications, comme la CI |
+| `make syntax` | Compile chaque fichier Lua sans l'exécuter |
+| `make test` | Lance la suite de tests Busted |
+| `make check-packaging` | Vérifie que chaque fichier du `.toc` est bien empaqueté |
+
+La CI lance ces mêmes cibles sur chaque push et chaque pull request.
+
 ---
 
 ## English
@@ -148,6 +161,19 @@ Settings live in **Esc > Options > AddOns > WhatTodo**, or open with `/wt option
 | `/wt` | Toggle the list |
 | `/wt config` | Open the management panel |
 | `/wt options` | Open the settings |
+
+### Development
+
+The checks run inside a Docker image, so Docker, `make` and Python 3 are all you need.
+
+| Command | Effect |
+|---------|--------|
+| `make check` | Run every check, as the CI does |
+| `make syntax` | Compile every Lua file without running it |
+| `make test` | Run the Busted test suite |
+| `make check-packaging` | Check that every file of the `.toc` is packaged |
+
+The CI runs these same targets on every push and pull request.
 
 ---
 
