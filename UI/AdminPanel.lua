@@ -1,4 +1,4 @@
-local ADDON_NAME, WhatTodo = ...
+local _, WhatTodo = ...
 local AdminPanel = {}
 WhatTodo.AdminPanel = AdminPanel
 
@@ -34,7 +34,7 @@ StaticPopupDialogs["WHATTODO_SEASON_REMOVE"] = {
   timeout = 0,
   whileDead = 1,
   hideOnEscape = 1,
-  OnAccept = function(self, data)
+  OnAccept = function(_, data)
     if data and data.onConfirm then data.onConfirm() end
   end,
 }
