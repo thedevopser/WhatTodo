@@ -34,9 +34,8 @@ ADDON_FILES := \
 image:
 	docker build -q -t $(TEST_IMAGE) - < Dockerfile.test
 
-# luac 5.4 crashes when -p is given several files, hence one call per file.
 syntax: image
-	$(DOCKER_RUN) sh -c 'status=0; for source in "$$@"; do luac5.4 -p "$$source" || status=1; done; exit $$status' sh $(LUA_SOURCES)
+	$(DOCKER_RUN) luac5.1 -p $(LUA_SOURCES)
 
 test: image
 	$(DOCKER_RUN) busted --pattern _test tests/
