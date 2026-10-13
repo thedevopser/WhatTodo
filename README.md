@@ -86,6 +86,7 @@ Les vérifications tournent dans une image Docker, il suffit donc d'avoir Docker
 |----------|-------|
 | `make check` | Lance toutes les vérifications, comme la CI |
 | `make syntax` | Compile chaque fichier Lua sans l'exécuter |
+| `make lint` | Lance luacheck sur le code de l'addon et les tests |
 | `make test` | Lance la suite de tests Busted |
 | `make check-packaging` | Vérifie que chaque fichier du `.toc` est bien empaqueté |
 
@@ -170,6 +171,7 @@ The checks run inside a Docker image, so Docker, `make` and Python 3 are all you
 |---------|--------|
 | `make check` | Run every check, as the CI does |
 | `make syntax` | Compile every Lua file without running it |
+| `make lint` | Run luacheck on the addon code and the tests |
 | `make test` | Run the Busted test suite |
 | `make check-packaging` | Check that every file of the `.toc` is packaged |
 

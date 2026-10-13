@@ -1,4 +1,4 @@
-local ADDON_NAME, WhatTodo = ...
+local _, WhatTodo = ...
 local Display = {}
 WhatTodo.Display = Display
 local Tasks = WhatTodo.Tasks
@@ -275,7 +275,7 @@ function Display.Refresh()
       local header = acquireHeader(headerIndex)
       local nextReset = Reset.GetNextReset(freq, now, offset, wday)
       local collapsed = isCollapsed(freq)
-      local done, total = Tasks.Progress(freq)
+      local doneCount, total = Tasks.Progress(freq)
       header.frequency = freq
       header:ClearAllPoints()
       header:SetPoint("TOPLEFT", frame.content, "TOPLEFT", 0, y)
@@ -283,7 +283,7 @@ function Display.Refresh()
       applyShadow(header.text)
       header.text:SetText(("%s %s  %s(%s)|r"):format(
         collapsed and ICON_COLLAPSED or ICON_EXPANDED,
-        L.SECTION_PROGRESS:format(FREQ_TITLES[freq], done, total),
+        L.SECTION_PROGRESS:format(FREQ_TITLES[freq], doneCount, total),
         colorCode(theme.countdownColor),
         formatCountdown(nextReset - now)))
       maxRight = math.max(maxRight, header.text:GetStringWidth())

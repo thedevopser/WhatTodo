@@ -23,6 +23,9 @@ jobs:
       - name: Lua syntax
         run: make syntax
 
+      - name: Lint
+        run: make lint
+
       - name: Tests
         run: make test
 
