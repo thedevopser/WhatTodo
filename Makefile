@@ -29,7 +29,7 @@ ADDON_FILES := \
 	Libs/embeds.xml \
 	Textures/icon.tga
 
-.PHONY: zip help image syntax lint test check-packaging check
+.PHONY: zip help image syntax lint test check-packaging check-version check
 
 image:
 	docker build -q -t $(TEST_IMAGE) - < Dockerfile.test
@@ -42,11 +42,15 @@ lint: image
 
 test: image
 	$(DOCKER_RUN) busted --pattern _test tests/
+	python3 -m unittest discover -s tests/tools
 
 check-packaging:
 	python3 tools/check-packaging.py $(ADDON_FILES)
 
-check: syntax lint test check-packaging
+check-version:
+	python3 tools/check-version.py
+
+check: syntax lint test check-packaging check-version
 
 zip: check-packaging
 	@[ -n "$(VERSION)" ] || { echo "Erreur : aucun tag git trouvé. Exemple : git tag v1.0.0"; exit 1; }
@@ -68,7 +72,8 @@ help:
 	@echo "  make check            # every check below, as run by the CI"
 	@echo "  make syntax           # compile every Lua source without running it"
 	@echo "  make lint             # run luacheck"
-	@echo "  make test             # run the Busted suite"
+	@echo "  make test             # run the Busted suite and the tests of tools/"
 	@echo "  make check-packaging  # check that every file of the .toc is packaged"
+	@echo "  make check-version    # check that the version numbers are consistent"
 	@echo "  make image            # build the Docker image used by syntax, lint and test"
 	@echo "  git tag v1.0.0 && make zip   # build \$$HOME/addons/versions/$(NAME)-v1.0.0.zip"

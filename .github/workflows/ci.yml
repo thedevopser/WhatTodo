@@ -31,3 +31,6 @@ jobs:
 
       - name: Packaging
         run: make check-packaging
+
+      - name: Version consistency
+        run: make check-version
