@@ -55,6 +55,20 @@ L.TPL_WORLD_EVENT   = "World event weekly quest"
 L.TPL_HOUSING       = "Housing weekly quest"
 L.TPL_TRADING_POST  = "Trading Post"
 
+-- Midnight 12.1.5 : uniquement les nouveautés du patch
+L.TPL_SEASON_MIDNIGHT_12_1_5 = "Midnight 12.1.5"
+L.TPL_CAT_AQIR      = "Aqir Invasion"
+L.TPL_CAT_LABYRINTH = "Labyrinth of Kindo'jan"
+L.TPL_CAT_RAID      = "Raid"
+L.TPL_CAT_ORIN      = "Orin's research"
+L.TPL_1215_AQIR_BOSS       = "Aqir Invasion: first Monstrosity kill (satchel)"
+L.TPL_1215_AQIR_REPUTATION = "Aqir Invasion (Research Enclave rep)"
+L.TPL_1215_WAHDU           = "Wah'du's request (designated chamber, T8+)"
+L.TPL_1215_LABYRINTH       = "Labyrinth of Kindo'jan: 9 chambers + Kindo'jan"
+L.TPL_1215_RAID_KITHIX     = "Raid: The Unbinding of Kith'ix"
+L.TPL_1215_VOIDCORE        = "Nebulous Voidcore (Orin)"
+L.TPL_1215_VENOMSTONES     = "Ascendant Venomstones (10 per upgrade)"
+
 -- Titre de section : libellé, tâches faites, total
 L.SECTION_PROGRESS  = "%s %d/%d"
 

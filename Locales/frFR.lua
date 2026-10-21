@@ -56,6 +56,21 @@ L.TPL_WORLD_EVENT   = "Quête hebdo d'événement mondial"
 L.TPL_HOUSING       = "Quête hebdo de logement"
 L.TPL_TRADING_POST  = "Comptoir"
 
+-- Midnight 12.1.5. « L'invasion des Aqir » et « Vénithe ascendante » viennent du
+-- client FR ; les autres noms propres restent à confirmer en jeu.
+L.TPL_SEASON_MIDNIGHT_12_1_5 = "Midnight 12.1.5"
+L.TPL_CAT_AQIR      = "L'invasion des Aqir"
+L.TPL_CAT_LABYRINTH = "Labyrinthe de Kindo'jan"
+L.TPL_CAT_RAID      = "Raid"
+L.TPL_CAT_ORIN      = "Recherches d'Orin"
+L.TPL_1215_AQIR_BOSS       = "L'invasion des Aqir : 1er boss Monstruosité (sacoche)"
+L.TPL_1215_AQIR_REPUTATION = "L'invasion des Aqir (réputation Enclave)"
+L.TPL_1215_WAHDU           = "Quête de Wah'du (salle désignée, T8+)"
+L.TPL_1215_LABYRINTH       = "Labyrinthe de Kindo'jan : 9 salles + Kindo'jan"
+L.TPL_1215_RAID_KITHIX     = "Raid : la Libération de Kith'ix"
+L.TPL_1215_VOIDCORE        = "Noyau du Vide nébuleux (Orin)"
+L.TPL_1215_VENOMSTONES     = "Vénithe ascendante (10 par amélioration)"
+
 -- Titre de section : libellé, tâches faites, total
 L.SECTION_PROGRESS  = "%s %d/%d"
 

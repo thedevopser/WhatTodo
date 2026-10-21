@@ -170,6 +170,62 @@ describe("SeasonTemplates — contenu des Essentiels", function()
     end)
 end)
 
+describe("SeasonTemplates — template Midnight 12.1.5", function()
+    local PATCH = "midnight_12_1_5"
+
+    local function contentOf(categoryKey)
+        local out = {}
+        for _, item in ipairs(categoryOf(PATCH, categoryKey).items) do
+            out[#out + 1] = { item.labelKey, item.frequency, item.scope }
+        end
+        return out
+    end
+
+    it("vient en tête de liste et sert de template par défaut", function()
+        assert.equals(PATCH, SeasonTemplates.GetSeasons()[1].key)
+        assert.equals(PATCH, SeasonTemplates.defaultSeason)
+    end)
+
+    it("L'invasion des Aqir : boss hebdomadaire et réputation quotidienne", function()
+        assert.same({
+            { "TPL_1215_AQIR_BOSS",       "weekly", "char" },
+            { "TPL_1215_AQIR_REPUTATION", "daily",  "char" },
+        }, contentOf("aqir"))
+    end)
+
+    it("Labyrinthe : quête de Wah'du et parcours complet", function()
+        assert.same({
+            { "TPL_1215_WAHDU",     "weekly", "char" },
+            { "TPL_1215_LABYRINTH", "weekly", "char" },
+        }, contentOf("labyrinth"))
+    end)
+
+    it("Raid : la Libération de Kith'ix", function()
+        assert.same({
+            { "TPL_1215_RAID_KITHIX", "weekly", "char" },
+        }, contentOf("raid"))
+    end)
+
+    it("Recherches d'Orin : Noyau du Vide nébuleux et Vénithe ascendante", function()
+        assert.same({
+            { "TPL_1215_VOIDCORE",    "weekly", "char" },
+            { "TPL_1215_VENOMSTONES", "weekly", "char" },
+        }, contentOf("orin"))
+    end)
+
+    it("ne contient que ces quatre catégories", function()
+        assert.equals(4, #SeasonTemplates.GetCategories(PATCH))
+    end)
+
+    it("ne partage aucun libellé avec les Essentiels", function()
+        local essentials = {}
+        for _, item in ipairs(itemsOf("essentials")) do essentials[L[item.labelKey]] = true end
+        for _, item in ipairs(itemsOf(PATCH)) do
+            assert.is_nil(essentials[L[item.labelKey]], item.labelKey)
+        end
+    end)
+end)
+
 describe("SeasonTemplates.Import", function()
     after_each(withoutTestSeason)
 

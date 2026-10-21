@@ -12,6 +12,43 @@ local L = WhatTodo_L
 -- Essentiels (activités stables d'un patch à l'autre) ensuite.
 SeasonTemplates.seasons = {
   {
+    key = "midnight_12_1_5",
+    label = L.TPL_SEASON_MIDNIGHT_12_1_5,
+    categories = {
+      {
+        key = "aqir",
+        label = L.TPL_CAT_AQIR,
+        items = {
+          { labelKey = "TPL_1215_AQIR_BOSS",       frequency = "weekly", scope = "char" },
+          { labelKey = "TPL_1215_AQIR_REPUTATION", frequency = "daily",  scope = "char" },
+        },
+      },
+      {
+        key = "labyrinth",
+        label = L.TPL_CAT_LABYRINTH,
+        items = {
+          { labelKey = "TPL_1215_WAHDU",     frequency = "weekly", scope = "char" },
+          { labelKey = "TPL_1215_LABYRINTH", frequency = "weekly", scope = "char" },
+        },
+      },
+      {
+        key = "raid",
+        label = L.TPL_CAT_RAID,
+        items = {
+          { labelKey = "TPL_1215_RAID_KITHIX", frequency = "weekly", scope = "char" },
+        },
+      },
+      {
+        key = "orin",
+        label = L.TPL_CAT_ORIN,
+        items = {
+          { labelKey = "TPL_1215_VOIDCORE",    frequency = "weekly", scope = "char" },
+          { labelKey = "TPL_1215_VENOMSTONES", frequency = "weekly", scope = "char" },
+        },
+      },
+    },
+  },
+  {
     key = "essentials",
     label = L.TPL_SEASON_ESSENTIALS,
     categories = {
@@ -37,7 +74,7 @@ SeasonTemplates.seasons = {
   },
 }
 
-SeasonTemplates.defaultSeason = "essentials"
+SeasonTemplates.defaultSeason = "midnight_12_1_5"
 
 local EMPTY = {}
 
