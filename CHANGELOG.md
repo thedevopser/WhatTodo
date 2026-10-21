@@ -4,6 +4,28 @@ All notable changes to WhatTodo are documented here.
 
 ---
 
+## [1.7.0]
+
+### Added
+- **Essentials template**: activities that carry over from one patch to the next, in two categories. Dungeons & Raid: Great Vault, Mythic+, Bountiful Delves. World: world event weekly quest, housing weekly quest (account), Trading Post (monthly, account)
+- **Midnight 12.1.5 template**, selected by default, holding only what patch 12.1.5 added: Aqir Invasion (first Monstrosity kill of the week, daily run for the Research Enclave reputation), Labyrinth of Kindo'jan (Wah'du's weekly request, full nine-chamber run), The Unbinding of Kith'ix raid, Orin's research (Nebulous Voidcore, Ascendant Venomstones)
+- Busted coverage for both templates (content, frequencies, scopes, both locales) and for the template migration
+
+### Changed
+- The Midnight S1 and S2 templates are removed, along with their locale keys. The patch template is meant to be replaced with each patch, while Essentials stays
+- The template selector is labelled "Template" and the config section "Task templates", since Essentials is not a season
+- Labels shared with the former S2 (Great Vault, Mythic+, Bountiful Delves, world event, housing) are kept word for word, so they are not imported twice
+
+### Migration
+- Tasks imported from the S1 and S2 templates are removed on load, except those covered by Essentials: they keep their completion state and order, are tagged `essentials` and take the current locale's label. Labels are recognised in English and French. Unmarked tasks (1.4.0 imports) are only matched against S1 labels; manual tasks and template tasks renamed by the player are left alone
+- New migration steps: `char` v2 on `db.profile.tasks` (run by each character) and `global` v1 on `db.global.tasks` (run once per account)
+
+### Notes
+- French names confirmed on the FR client: "L'invasion des Aqir", "Vénithe ascendante". The other 12.1.5 names live in `Locales/frFR.lua` and may need adjusting
+- Changelog popup triggered for this release (`CHANGELOG_VERSION` bumped to `1.7.0`)
+
+---
+
 ## [1.6.0]
 
 ### Added

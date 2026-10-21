@@ -104,6 +104,6 @@ L.THEME_BLIZZARD    = "Blizzard"
 L.THEME_TRANSPARENT = "Transparent"
 
 -- Popup de nouveautés
-L.CHANGELOG_TITLE   = "WhatTodo — What's new (1.6.0)"
-L.CHANGELOG_BODY    = "The list is now yours to shape. Open the settings with /wt options (or Esc > Options > AddOns) to pick one of five themes, grey out or hide completed tasks, change the scale and background opacity, lock the window or hide it in combat.\n\nEach section header shows your progress (3/7) and folds away with a click. In the management panel, the arrows next to each task change its order."
+L.CHANGELOG_TITLE   = "WhatTodo — What's new (1.7.0)"
+L.CHANGELOG_BODY    = "Task templates have been rebuilt for patch 12.1.5. The Midnight 12.1.5 template only holds what the patch added: Aqir Invasion, Labyrinth of Kindo'jan, the Kith'ix raid and Orin's research. The new Essentials template gathers what carries over from patch to patch: Great Vault, Mythic+, Bountiful Delves, world event, housing and Trading Post.\n\nThe Season 1 and Season 2 tasks you had imported have been cleaned up. Those covered by Essentials stay in your list with their progress; your own tasks are untouched."
 L.CHANGELOG_CLOSE   = "Got it"

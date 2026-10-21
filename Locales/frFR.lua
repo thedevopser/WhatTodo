@@ -106,6 +106,6 @@ L.THEME_BLIZZARD    = "Blizzard"
 L.THEME_TRANSPARENT = "Transparent"
 
 -- Popup de nouveautés
-L.CHANGELOG_TITLE   = "WhatTodo — Nouveautés (1.6.0)"
-L.CHANGELOG_BODY    = "La liste se règle désormais à votre goût. Ouvrez les options avec /wt options (ou Échap > Options > AddOns) pour choisir parmi cinq thèmes, griser ou masquer les tâches faites, régler l'échelle et l'opacité du fond, verrouiller la fenêtre ou la masquer en combat.\n\nChaque en-tête de section affiche votre avancement (3/7) et se replie d'un clic. Dans le panneau de gestion, les flèches à côté de chaque tâche changent son ordre."
+L.CHANGELOG_TITLE   = "WhatTodo — Nouveautés (1.7.0)"
+L.CHANGELOG_BODY    = "Les templates de tâches sont refaits pour le patch 12.1.5. Le template Midnight 12.1.5 ne contient que les nouveautés du patch : L'invasion des Aqir, le Labyrinthe de Kindo'jan, le raid de Kith'ix et les recherches d'Orin. Le nouveau template Essentiels regroupe ce qui reste d'un patch à l'autre : Grand Coffre, Mythique+, Gouffres abondants, événement mondial, logement et Comptoir.\n\nLes tâches importées depuis les saisons 1 et 2 ont été nettoyées. Celles que reprennent les Essentiels restent dans votre liste avec leur avancement ; vos propres tâches ne sont pas touchées."
 L.CHANGELOG_CLOSE   = "Compris"

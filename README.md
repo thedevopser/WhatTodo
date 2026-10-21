@@ -1,6 +1,6 @@
 # WhatTodo
 
-![Version](https://img.shields.io/badge/version-1.6.0-blue)
+![Version](https://img.shields.io/badge/version-1.7.0-blue)
 ![WoW Interface](https://img.shields.io/badge/WoW-12.1.5%20Midnight-orange)
 ![Lua](https://img.shields.io/badge/Lua-5.1-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -56,6 +56,8 @@ L'infobulle indique le nombre de tâches restantes par fréquence.
 #### Panel de gestion
 
 Choisir une fréquence, saisir un libellé, cliquer sur **Ajouter**. Chaque tâche existante peut être renommée, recatégorisée ou supprimée, et les flèches en début de ligne la font monter ou descendre dans sa fréquence.
+
+La section **Templates de tâches** importe des listes prêtes à l'emploi, catégorie par catégorie. Le template du patch en cours (Midnight 12.1.5 : L'invasion des Aqir, Labyrinthe de Kindo'jan, raid de Kith'ix, recherches d'Orin) ne contient que les nouveautés du patch et change à chaque patch. Le template **Essentiels** regroupe les activités qui restent d'un patch à l'autre : Grand Coffre, Mythique+, Gouffres abondants, événement mondial, logement et Comptoir. Le bouton **Retirer la sélection** supprime les tâches importées depuis les catégories cochées.
 
 #### Options
 
@@ -142,6 +144,8 @@ The tooltip shows the number of remaining tasks per frequency.
 #### Management panel
 
 Pick a frequency, type a label, click **Add**. Each existing task can be renamed, re-categorized or deleted, and the arrows at the start of each row move it up or down within its frequency.
+
+The **Task templates** section imports ready-made lists, one category at a time. The current patch template (Midnight 12.1.5: Aqir Invasion, Labyrinth of Kindo'jan, Kith'ix raid, Orin's research) only holds what the patch added and is replaced with each patch. The **Essentials** template gathers the activities that carry over from one patch to the next: Great Vault, Mythic+, Bountiful Delves, world event, housing and Trading Post. **Remove selected** deletes the tasks imported from the ticked categories.
 
 #### Settings
 
