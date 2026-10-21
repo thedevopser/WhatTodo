@@ -34,65 +34,42 @@ L.PROFILE_COPY      = "Copier"
 L.PROFILE_COPIED    = "Liste copiée depuis %s"
 
 -- Templates de saison (import prérempli)
-L.SEASON_TEMPLATES  = "Templates de saison"
+L.SEASON_TEMPLATES  = "Templates de tâches"
 L.SEASON_IMPORT     = "Importer la sélection"
 L.SEASON_IMPORTED   = "%d tâche(s) importée(s)"
 L.SEASON_REMOVE     = "Retirer la sélection"
 L.SEASON_REMOVE_CONFIRM = "Retirer les tâches des catégories sélectionnées ? Cette action est irréversible."
 L.SEASON_REMOVED    = "%d tâche(s) retirée(s)"
 
--- Saisons proposées par le sélecteur
-L.TPL_SEASON        = "Saison"
-L.TPL_SEASON_MIDNIGHT_S1 = "Midnight S1"
-L.TPL_SEASON_MIDNIGHT_S2 = "Midnight S2 — La malédiction d'Ula'tek"
+-- Templates proposés par le sélecteur
+L.TPL_SEASON        = "Template"
+L.TPL_SEASON_ESSENTIALS = "Essentiels"
 
-L.TPL_CAT_WORLD     = "Monde — Saison"
 L.TPL_CAT_PVE       = "Donjons & Raid"
-L.TPL_CAT_PVP       = "JcJ"
-L.TPL_CAT_REP       = "Réputation"
-L.TPL_CAT_CRAFT     = "Métiers"
-L.TPL_CAT_EVENT     = "Événements temporaires"
+L.TPL_CAT_WORLD     = "Monde"
 
--- Midnight S1 (12.0.7)
-L.TPL_VOID_ASSAULT  = "Assaut du Vide (hebdo)"
-L.TPL_RITUAL_SITES  = "Sites rituels"
-L.TPL_SHOWDOWN      = "Zones d'affrontement (Naigtal / Val)"
-L.TPL_NIGHTMARE_PREY = "3 chasses « Proie de cauchemar »"
+-- Essentiels : activités stables d'un patch à l'autre
+L.TPL_GREAT_VAULT   = "Grand Coffre"
+L.TPL_MYTHIC_PLUS   = "Mythique+ (meilleures clés)"
+L.TPL_BOUNTIFUL_DELVE = "Gouffres abondants (clés)"
 L.TPL_WORLD_EVENT   = "Quête hebdo d'événement mondial"
 L.TPL_HOUSING       = "Quête hebdo de logement"
-L.TPL_RAID_SPOREFALL = "Raid Sporefall (Rotmire)"
-L.TPL_MYTHIC_PLUS   = "Mythique+ (meilleures clés)"
-L.TPL_DELVE         = "Au moins une Faille T11"
-L.TPL_GREAT_VAULT   = "Grand Coffre"
-L.TPL_RENOWN        = "Activités de Renommée hebdo"
-L.TPL_TIMEWALKING   = "Quête hebdo Marche du temps"
+L.TPL_TRADING_POST  = "Comptoir"
 
--- Midnight S2 (12.1.0 — La malédiction d'Ula'tek).
--- Noms propres repris du client FR ; ceux sans traduction officielle connue
--- restent en anglais (Vaults of Atal'Utek, Housing Endeavor).
-L.TPL_S2_CURSE_SURGE    = "Résurgences maudites & rares (Île Annelée)"
-L.TPL_S2_CURSED_FISHING = "Pêche maudite (cap. Tokka)"
-L.TPL_S2_RALKALA        = "Bonus quotidien de Ral'kala"
-L.TPL_S2_VAULTS_ATALUTEK = "Événement public : Vaults of Atal'Utek"
-L.TPL_S2_SPECIAL_ASSIGNMENT = "Assignation spéciale (Île Annelée)"
-L.TPL_S2_PREY_HUNTS     = "Chasses de la Traque (cap 15/sem.)"
-L.TPL_S2_ENDEAVOR       = "Housing Endeavor"
-L.TPL_S2_MYTHIC_ZERO    = "Mythique 0 (reset quotidien)"
-L.TPL_S2_RAID_VENOMOUS_ABYSS = "Raid de l'Abîme Venimeux"
-L.TPL_S2_LAIR_TIDEBOUND = "Repaire de la Grotte des Marées"
-L.TPL_S2_VOIDCORE       = "Relance Noyau du Vide nébuleux"
-L.TPL_S2_DELVE_T8       = "Gouffre T8+ (ligne Monde du Coffre)"
-L.TPL_S2_BOUNTIFUL_DELVE = "Gouffres abondants (clés)"
-L.TPL_S2_CRESTS         = "Cap hebdo d'écus (100/type)"
-L.TPL_S2_CONQUEST       = "Objectif Conquête hebdo"
-L.TPL_S2_RATED          = "Mêlée cotée / Blitz coté"
-L.TPL_S2_RENOWN_ZULJARRA = "Renom Forces de Zul'jarra"
-L.TPL_S2_CORROSIVE_SOULS = "Âmes corrosives (Autel de la corrosion)"
-L.TPL_S2_DELVERS_JOURNEY = "Périple des Gouffres"
-L.TPL_S2_PREYHUNTER_JOURNEY = "Périple de la Traque"
-L.TPL_S2_TREATISE       = "Traité de métier"
-L.TPL_S2_CRAFT_ORDERS   = "Commandes de craft"
-L.TPL_S2_TRADING_POST   = "Comptoir d'échange / Journal du voyageur"
+-- Midnight 12.1.5. « L'invasion des Aqir » et « Vénithe ascendante » viennent du
+-- client FR ; les autres noms propres restent à confirmer en jeu.
+L.TPL_SEASON_MIDNIGHT_12_1_5 = "Midnight 12.1.5"
+L.TPL_CAT_AQIR      = "L'invasion des Aqir"
+L.TPL_CAT_LABYRINTH = "Labyrinthe de Kindo'jan"
+L.TPL_CAT_RAID      = "Raid"
+L.TPL_CAT_ORIN      = "Recherches d'Orin"
+L.TPL_1215_AQIR_BOSS       = "L'invasion des Aqir : 1er boss Monstruosité (sacoche)"
+L.TPL_1215_AQIR_REPUTATION = "L'invasion des Aqir (réputation Enclave)"
+L.TPL_1215_WAHDU           = "Quête de Wah'du (salle désignée, T8+)"
+L.TPL_1215_LABYRINTH       = "Labyrinthe de Kindo'jan : 9 salles + Kindo'jan"
+L.TPL_1215_RAID_KITHIX     = "Raid : la Libération de Kith'ix"
+L.TPL_1215_VOIDCORE        = "Noyau du Vide nébuleux (Orin)"
+L.TPL_1215_VENOMSTONES     = "Vénithe ascendante (10 par amélioration)"
 
 -- Titre de section : libellé, tâches faites, total
 L.SECTION_PROGRESS  = "%s %d/%d"
@@ -129,6 +106,6 @@ L.THEME_BLIZZARD    = "Blizzard"
 L.THEME_TRANSPARENT = "Transparent"
 
 -- Popup de nouveautés
-L.CHANGELOG_TITLE   = "WhatTodo — Nouveautés (1.6.0)"
-L.CHANGELOG_BODY    = "La liste se règle désormais à votre goût. Ouvrez les options avec /wt options (ou Échap > Options > AddOns) pour choisir parmi cinq thèmes, griser ou masquer les tâches faites, régler l'échelle et l'opacité du fond, verrouiller la fenêtre ou la masquer en combat.\n\nChaque en-tête de section affiche votre avancement (3/7) et se replie d'un clic. Dans le panneau de gestion, les flèches à côté de chaque tâche changent son ordre."
+L.CHANGELOG_TITLE   = "WhatTodo — Nouveautés (1.7.0)"
+L.CHANGELOG_BODY    = "Les templates de tâches sont refaits pour le patch 12.1.5. Le template Midnight 12.1.5 ne contient que les nouveautés du patch : L'invasion des Aqir, le Labyrinthe de Kindo'jan, le raid de Kith'ix et les recherches d'Orin. Le nouveau template Essentiels regroupe ce qui reste d'un patch à l'autre : Grand Coffre, Mythique+, Gouffres abondants, événement mondial, logement et Comptoir.\n\nLes tâches importées depuis les saisons 1 et 2 ont été nettoyées. Celles que reprennent les Essentiels restent dans votre liste avec leur avancement ; vos propres tâches ne sont pas touchées."
 L.CHANGELOG_CLOSE   = "Compris"

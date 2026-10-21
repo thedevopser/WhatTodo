@@ -10,6 +10,16 @@ local Tasks = _G.WhatTodo.Tasks
 local SeasonTemplates = _G.WhatTodo.SeasonTemplates
 local L = _G.WhatTodo_L
 
+local function loadFrenchOnly()
+    local savedL, savedGetLocale = _G.WhatTodo_L, _G.GetLocale
+    _G.WhatTodo_L = {}
+    _G.GetLocale = function() return "frFR" end
+    dofile("Locales/frFR.lua")
+    local frFR = _G.WhatTodo_L
+    _G.WhatTodo_L, _G.GetLocale = savedL, savedGetLocale
+    return frFR
+end
+
 local function freshDb()
     local db = {
         char = { dbVersion = 1, display = {}, minimap = {} },
@@ -20,32 +30,70 @@ local function freshDb()
     return db
 end
 
+local function seasonByKey(seasonKey)
+    for _, season in ipairs(SeasonTemplates.GetSeasons()) do
+        if season.key == seasonKey then return season end
+    end
+end
+
 local function categoryOf(seasonKey, categoryKey)
     for _, category in ipairs(SeasonTemplates.GetCategories(seasonKey)) do
         if category.key == categoryKey then return category end
     end
 end
 
-local function labelsOf(seasonKey, categoryKey)
+local function itemsOf(seasonKey)
     local out = {}
-    for _, item in ipairs(categoryOf(seasonKey, categoryKey).items) do
-        out[#out + 1] = L[item.labelKey]
+    for _, category in ipairs(SeasonTemplates.GetCategories(seasonKey)) do
+        for _, item in ipairs(category.items) do out[#out + 1] = item end
     end
     return out
 end
 
+-- Saison factice qui partage le libellé du Grand Coffre avec les Essentiels :
+-- sert à vérifier la déduplication et la protection inter-saisons sans
+-- dépendre du contenu d'un patch donné.
+local TEST_SEASON = {
+    key = "test_season",
+    label = "Test season",
+    categories = {
+        {
+            key = "pve",
+            label = "Test PvE",
+            items = {
+                { labelKey = "TPL_GREAT_VAULT", frequency = "weekly", scope = "char" },
+                { labelKey = "TEST_ONLY_ITEM",  frequency = "daily",  scope = "char" },
+            },
+        },
+    },
+}
+
+local function withTestSeason()
+    L.TEST_ONLY_ITEM = "Test-only item"
+    table.insert(SeasonTemplates.seasons, TEST_SEASON)
+end
+
+local function withoutTestSeason()
+    L.TEST_ONLY_ITEM = nil
+    for i, season in ipairs(SeasonTemplates.seasons) do
+        if season == TEST_SEASON then table.remove(SeasonTemplates.seasons, i) end
+    end
+end
+
 describe("SeasonTemplates — structure des saisons", function()
-    it("expose Midnight S2 puis S1, dans cet ordre", function()
-        local seasons = SeasonTemplates.GetSeasons()
-        assert.equals(2, #seasons)
-        assert.equals("midnight_s2", seasons[1].key)
-        assert.equals("midnight_s1", seasons[2].key)
+    it("ne propose plus les saisons Midnight S1 et S2", function()
+        assert.is_nil(seasonByKey("midnight_s1"))
+        assert.is_nil(seasonByKey("midnight_s2"))
     end)
 
-    it("GetCategories sans argument renvoie la saison par défaut", function()
-        assert.equals("midnight_s2", SeasonTemplates.defaultSeason)
+    it("propose le template Essentiels", function()
+        assert.is_table(seasonByKey("essentials"))
+    end)
+
+    it("la saison par défaut existe et GetCategories sans argument la renvoie", function()
+        assert.is_table(seasonByKey(SeasonTemplates.defaultSeason))
         assert.same(
-            SeasonTemplates.GetCategories("midnight_s2"),
+            SeasonTemplates.GetCategories(SeasonTemplates.defaultSeason),
             SeasonTemplates.GetCategories()
         )
     end)
@@ -54,12 +102,15 @@ describe("SeasonTemplates — structure des saisons", function()
         assert.equals(0, #SeasonTemplates.GetCategories("midnight_s99"))
     end)
 
-    it("chaque labelKey déclaré a une entrée de localisation", function()
+    it("chaque libellé existe en anglais et en français", function()
+        local frFR = loadFrenchOnly()
         for _, season in ipairs(SeasonTemplates.GetSeasons()) do
+            assert.is_string(season.label, season.key)
             for _, category in ipairs(season.categories) do
-                assert.is_string(category.label)
+                assert.is_string(category.label, category.key)
                 for _, item in ipairs(category.items) do
-                    assert.is_string(L[item.labelKey], item.labelKey .. " manquant")
+                    assert.is_string(L[item.labelKey], "enUS " .. item.labelKey)
+                    assert.is_string(frFR[item.labelKey], "frFR " .. item.labelKey)
                 end
             end
         end
@@ -78,49 +129,135 @@ describe("SeasonTemplates — structure des saisons", function()
         end
     end)
 
-    it("la S2 couvre les trois fréquences", function()
-        local seen = {}
-        for _, category in ipairs(SeasonTemplates.GetCategories("midnight_s2")) do
-            for _, item in ipairs(category.items) do
-                seen[item.frequency] = true
+    it("aucun libellé n'apparaît deux fois dans une même saison", function()
+        for _, season in ipairs(SeasonTemplates.GetSeasons()) do
+            local seen = {}
+            for _, item in ipairs(itemsOf(season.key)) do
+                assert.is_nil(seen[item.labelKey], season.key .. " " .. item.labelKey)
+                seen[item.labelKey] = true
             end
         end
-        assert.is_true(seen.daily)
-        assert.is_true(seen.weekly)
-        assert.is_true(seen.monthly)
+    end)
+end)
+
+describe("SeasonTemplates — contenu des Essentiels", function()
+    local function contentOf(categoryKey)
+        local out = {}
+        for _, item in ipairs(categoryOf("essentials", categoryKey).items) do
+            out[#out + 1] = { item.labelKey, item.frequency, item.scope }
+        end
+        return out
+    end
+
+    it("Donjons & Raid : Grand Coffre, Mythique+ et Gouffres abondants", function()
+        assert.same({
+            { "TPL_GREAT_VAULT",     "weekly", "char" },
+            { "TPL_MYTHIC_PLUS",     "weekly", "char" },
+            { "TPL_BOUNTIFUL_DELVE", "weekly", "char" },
+        }, contentOf("pve"))
+    end)
+
+    it("Monde : événement mondial, logement et Comptoir", function()
+        assert.same({
+            { "TPL_WORLD_EVENT",  "weekly",  "char" },
+            { "TPL_HOUSING",      "weekly",  "account" },
+            { "TPL_TRADING_POST", "monthly", "account" },
+        }, contentOf("world"))
+    end)
+
+    it("ne contient que ces deux catégories", function()
+        assert.equals(2, #SeasonTemplates.GetCategories("essentials"))
+    end)
+end)
+
+describe("SeasonTemplates — template Midnight 12.1.5", function()
+    local PATCH = "midnight_12_1_5"
+
+    local function contentOf(categoryKey)
+        local out = {}
+        for _, item in ipairs(categoryOf(PATCH, categoryKey).items) do
+            out[#out + 1] = { item.labelKey, item.frequency, item.scope }
+        end
+        return out
+    end
+
+    it("vient en tête de liste et sert de template par défaut", function()
+        assert.equals(PATCH, SeasonTemplates.GetSeasons()[1].key)
+        assert.equals(PATCH, SeasonTemplates.defaultSeason)
+    end)
+
+    it("L'invasion des Aqir : boss hebdomadaire et réputation quotidienne", function()
+        assert.same({
+            { "TPL_1215_AQIR_BOSS",       "weekly", "char" },
+            { "TPL_1215_AQIR_REPUTATION", "daily",  "char" },
+        }, contentOf("aqir"))
+    end)
+
+    it("Labyrinthe : quête de Wah'du et parcours complet", function()
+        assert.same({
+            { "TPL_1215_WAHDU",     "weekly", "char" },
+            { "TPL_1215_LABYRINTH", "weekly", "char" },
+        }, contentOf("labyrinth"))
+    end)
+
+    it("Raid : la Libération de Kith'ix", function()
+        assert.same({
+            { "TPL_1215_RAID_KITHIX", "weekly", "char" },
+        }, contentOf("raid"))
+    end)
+
+    it("Recherches d'Orin : Noyau du Vide nébuleux et Vénithe ascendante", function()
+        assert.same({
+            { "TPL_1215_VOIDCORE",    "weekly", "char" },
+            { "TPL_1215_VENOMSTONES", "weekly", "char" },
+        }, contentOf("orin"))
+    end)
+
+    it("ne contient que ces quatre catégories", function()
+        assert.equals(4, #SeasonTemplates.GetCategories(PATCH))
+    end)
+
+    it("ne partage aucun libellé avec les Essentiels", function()
+        local essentials = {}
+        for _, item in ipairs(itemsOf("essentials")) do essentials[L[item.labelKey]] = true end
+        for _, item in ipairs(itemsOf(PATCH)) do
+            assert.is_nil(essentials[L[item.labelKey]], item.labelKey)
+        end
     end)
 end)
 
 describe("SeasonTemplates.Import", function()
+    after_each(withoutTestSeason)
+
     it("ajoute les tâches de la catégorie cochée et route selon la portée", function()
         local db = freshDb()
-        local category = categoryOf("midnight_s2", "world")
-        local added = SeasonTemplates.Import("midnight_s2", { world = true })
+        local added = SeasonTemplates.Import("essentials", { world = true })
 
-        assert.equals(#category.items, added)
-        assert.equals(#db.profile.tasks + #db.global.tasks, added)
-        -- TPL_HOUSING et TPL_S2_ENDEAVOR sont account-wide
+        assert.equals(3, added)
+        assert.equals(1, #db.profile.tasks)
         assert.equals(2, #db.global.tasks)
     end)
 
     it("marque chaque tâche importée avec sa saison d'origine", function()
         local db = freshDb()
-        SeasonTemplates.Import("midnight_s2", { pvp = true })
-        for _, task in ipairs(db.profile.tasks) do
-            assert.equals("midnight_s2", task.templateSeason)
+        SeasonTemplates.Import("essentials", { pve = true, world = true })
+        for _, task in ipairs(Tasks.GetAll()) do
+            assert.equals("essentials", task.templateSeason)
         end
+        assert.is_true(#db.profile.tasks > 0)
     end)
 
     it("ne réimporte pas une catégorie déjà importée", function()
         freshDb()
-        SeasonTemplates.Import("midnight_s2", { pve = true })
-        assert.equals(0, SeasonTemplates.Import("midnight_s2", { pve = true }))
+        SeasonTemplates.Import("essentials", { pve = true })
+        assert.equals(0, SeasonTemplates.Import("essentials", { pve = true }))
     end)
 
-    it("ne duplique pas les libellés partagés entre S1 et S2", function()
+    it("ne duplique pas un libellé déjà importé par une autre saison", function()
         local db = freshDb()
-        SeasonTemplates.Import("midnight_s1", { pve = true })
-        SeasonTemplates.Import("midnight_s2", { pve = true })
+        withTestSeason()
+        SeasonTemplates.Import("test_season", { pve = true })
+        SeasonTemplates.Import("essentials", { pve = true })
 
         local count = 0
         for _, task in ipairs(db.profile.tasks) do
@@ -132,90 +269,75 @@ describe("SeasonTemplates.Import", function()
     it("renvoie 0 pour une saison inconnue ou sans sélection", function()
         freshDb()
         assert.equals(0, SeasonTemplates.Import("midnight_s99", { pve = true }))
-        assert.equals(0, SeasonTemplates.Import("midnight_s2", {}))
-        assert.equals(0, SeasonTemplates.Import("midnight_s2", nil))
+        assert.equals(0, SeasonTemplates.Import("essentials", {}))
+        assert.equals(0, SeasonTemplates.Import("essentials", nil))
     end)
 end)
 
 describe("SeasonTemplates.Remove", function()
-    it("retire exactement les tâches de la catégorie et de la saison visées", function()
-        local db = freshDb()
-        SeasonTemplates.Import("midnight_s1", { world = true, rep = true })
-        local worldCount = #categoryOf("midnight_s1", "world").items
+    after_each(withoutTestSeason)
 
-        assert.equals(worldCount, SeasonTemplates.Remove("midnight_s1", { world = true }))
-        assert.equals(1, #db.profile.tasks) -- il reste la tâche de la catégorie rep
-        assert.equals(L.TPL_RENOWN, db.profile.tasks[1].label)
-        assert.equals(0, #db.global.tasks)
+    it("retire exactement les tâches de la catégorie visée", function()
+        local db = freshDb()
+        SeasonTemplates.Import("essentials", { pve = true, world = true })
+
+        assert.equals(3, SeasonTemplates.Remove("essentials", { pve = true }))
+        assert.equals(1, #db.profile.tasks) -- il reste l'événement mondial
+        assert.equals(L.TPL_WORLD_EVENT, db.profile.tasks[1].label)
+        assert.equals(2, #db.global.tasks)
     end)
 
-    it("préserve les libellés communs appartenant à une autre saison", function()
+    it("préserve un libellé commun appartenant à une autre saison", function()
         local db = freshDb()
-        SeasonTemplates.Import("midnight_s2", { pve = true })
-        SeasonTemplates.Import("midnight_s1", { pve = true })
+        withTestSeason()
+        SeasonTemplates.Import("test_season", { pve = true })
+        SeasonTemplates.Import("essentials", { pve = true })
 
-        SeasonTemplates.Remove("midnight_s1", { pve = true })
+        SeasonTemplates.Remove("essentials", { pve = true })
 
         local remaining = {}
         for _, task in ipairs(db.profile.tasks) do
             remaining[task.label] = task.templateSeason
         end
-        -- importés sous S2, donc épargnés malgré le libellé partagé
-        assert.equals("midnight_s2", remaining[L.TPL_GREAT_VAULT])
-        assert.equals("midnight_s2", remaining[L.TPL_MYTHIC_PLUS])
-        -- propres à la S1, donc supprimés
-        assert.is_nil(remaining[L.TPL_RAID_SPOREFALL])
-        assert.is_nil(remaining[L.TPL_DELVE])
+        assert.equals("test_season", remaining[L.TPL_GREAT_VAULT])
+        assert.equals("test_season", remaining[L.TEST_ONLY_ITEM])
+        assert.is_nil(remaining[L.TPL_MYTHIC_PLUS])
+        assert.is_nil(remaining[L.TPL_BOUNTIFUL_DELVE])
     end)
 
-    it("retire aussi les tâches sans marqueur (imports 1.4.0, saisie manuelle)", function()
+    it("retire aussi les tâches sans marqueur au libellé identique", function()
         local db = freshDb()
-        Tasks.Add(L.TPL_RENOWN, "weekly", "char") -- pas de templateSeason
+        Tasks.Add(L.TPL_GREAT_VAULT, "weekly", "char")
         assert.is_nil(db.profile.tasks[1].templateSeason)
 
-        assert.equals(1, SeasonTemplates.Remove("midnight_s1", { rep = true }))
+        assert.equals(1, SeasonTemplates.Remove("essentials", { pve = true }))
         assert.equals(0, #db.profile.tasks)
     end)
 
     it("ne touche pas aux tâches saisies à la main hors template", function()
         local db = freshDb()
         Tasks.Add("Vider la boîte aux lettres", "daily", "char")
-        SeasonTemplates.Import("midnight_s2", { craft = true })
+        SeasonTemplates.Import("essentials", { pve = true })
 
-        SeasonTemplates.Remove("midnight_s2", { craft = true })
+        SeasonTemplates.Remove("essentials", { pve = true })
         assert.equals(1, #db.profile.tasks)
         assert.equals("Vider la boîte aux lettres", db.profile.tasks[1].label)
     end)
 
     it("supprime dans le bon store selon la portée", function()
         local db = freshDb()
-        SeasonTemplates.Import("midnight_s2", { event = true })
-        assert.equals(1, #db.profile.tasks) -- TPL_TIMEWALKING
-        assert.equals(1, #db.global.tasks)  -- TPL_S2_TRADING_POST
+        SeasonTemplates.Import("essentials", { world = true })
 
-        assert.equals(2, SeasonTemplates.Remove("midnight_s2", { event = true }))
+        assert.equals(3, SeasonTemplates.Remove("essentials", { world = true }))
         assert.equals(0, #db.profile.tasks)
         assert.equals(0, #db.global.tasks)
     end)
 
-    it("supprime toutes les tâches visées sans en sauter (table.remove)", function()
-        local db = freshDb()
-        SeasonTemplates.Import("midnight_s2", { world = true, pve = true })
-        local expected = #categoryOf("midnight_s2", "pve").items
-
-        assert.equals(expected, SeasonTemplates.Remove("midnight_s2", { pve = true }))
-        for _, task in ipairs(db.profile.tasks) do
-            for _, label in ipairs(labelsOf("midnight_s2", "pve")) do
-                assert.are_not.equals(label, task.label)
-            end
-        end
-    end)
-
     it("renvoie 0 sur une catégorie non importée, une saison inconnue ou sans sélection", function()
         freshDb()
-        assert.equals(0, SeasonTemplates.Remove("midnight_s2", { pvp = true }))
+        assert.equals(0, SeasonTemplates.Remove("essentials", { pve = true }))
         assert.equals(0, SeasonTemplates.Remove("midnight_s99", { pve = true }))
-        assert.equals(0, SeasonTemplates.Remove("midnight_s2", {}))
-        assert.equals(0, SeasonTemplates.Remove("midnight_s2", nil))
+        assert.equals(0, SeasonTemplates.Remove("essentials", {}))
+        assert.equals(0, SeasonTemplates.Remove("essentials", nil))
     end)
 end)
